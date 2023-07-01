@@ -3,28 +3,50 @@
 
 #include <raylib.h>
 #include <map>
+#include <vector>
+#include <string>
 
 struct Animation {
     Texture2D sheet;
+    Rectangle source;
 
-    int frames;
-    int currentFrame;
-    float timeCounter;
-    float frameTime;
+    float destWidth;
+    float destHeight;
 
-    float width;
-    float height;
+    float sourceWidth;
+    float sourceHeight;
 
     bool loop;
+    int fps;
+    int frames;
 
-    Rectangle source;
-    float origWidth;
+    float xOffset;
+    float yOffset;
+    float flipXOffset;
 
-    Animation(Texture2D tex = {}, int fms = 0, float frameT = 0.f, bool loop = false, float w = 0.f, float h = 0.f);
+    Animation(int fms = 1, float sW = 0.f, float sH = 0.f, float dW = 0.f, float dH = 0.f, bool lop = false, float fXO = 0.f, float xO = 0.f, float yO = 0.f, int f = 10);
 
-    void tick();
+    Rectangle getDestFrame(float x, float y);
+
+    void kill();
+};
+
+struct AnimationHandler {
+    Animation* current;
+    std::map<std::string, Animation> animations;
+
+    bool flipX;
+    bool done;
+
+    int frame;
+    float time;
+
+    AnimationHandler();
+
+    void setAnim(const char* name);
+
     void update(float dt);
-    void draw(Rectangle dest, Color tint);
+    void draw(float x, float y, Color tint);
     void kill();
 };
 

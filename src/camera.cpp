@@ -8,7 +8,7 @@ void updateCameraToMap(Camera2D& camera, Player player, Map map) {
     float height = SCREEN_H / 2.f;
     
     camera.target.x = player.position.x + player.hurtbox.size.x / 2.f;
-    camera.target.y = player.position.y + player.hurtbox.size.y / 2.f;
+    camera.target.y = player.position.y - player.hurtbox.size.y / 2.f;
     camera.offset = { width, height };
 
     float minX = 0.f;

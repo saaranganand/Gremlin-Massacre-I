@@ -20,6 +20,7 @@ void Map::writeMap(const char* file) {
     while (mapData) {
         // Read each line of the map data.
         std::string line;
+        
         if (!getline(mapData, line)) break;
 
         std::istringstream mapStream(line);
@@ -32,7 +33,7 @@ void Map::writeMap(const char* file) {
             // Map data has tile names seperated by commas.
             // Each tile name has a map to a tile.
             // We take that tile, and add a pointer to it to the tileMap.
-            tileMap[t] = &tiles[tile];
+            tileMap[t] = &tiles[stoi(tile)];
             t++;
             if (t >= width * height) break;
         }
@@ -52,10 +53,13 @@ void Map::createTiles() {
     Tile error = Tile(NONE);
     error.source = {192.f, 0.f, 64.f, 64.f};
 
-    tiles["wall"] = wall;
-    tiles["air"] = air;
-    tiles["spike"] = spike;
-    tiles["error"] = error;
+    tiles[26] = wall;
+    tiles[2] = air;
+    tiles[5] = air;
+    tiles[27] = spike;
+    tiles[11] = air;
+    tiles[17] = air;
+    tiles[0] = error;
 }
 
 Map::Map() {
@@ -85,7 +89,7 @@ void Map::reset() {
 }
 
 Tile* Map::getTile(int x, int y) {
-    return tileMap[x * width + y];
+    return tileMap[x * height + y];
 }
 
 void Map::draw(Camera2D camera) {
@@ -110,21 +114,22 @@ void Map::draw(Camera2D camera) {
     }
 }
 
-void test_assignMap(Map& map) {
-    const char* mapName = "levels/tutorial/test.out";
+void tutorial_assignMap(Map& map) {
+    const char* mapName = "levels/tutorial/tutorial.out";
 
     if (map.instantiated) free(map.tileMap);
     map.instantiated = true;
-    map.width = 50;
-    map.height = 50;
-    map.startTile = { 3, 3 };
+    map.width = 209;
+    map.height = 32;
+    map.startTile = { 20, 10 };
     
     map.tileMap = (Tile**) malloc(map.width * map.height * sizeof(Tile*));
+    
 
     // Init map with error tiles, in case loading fails.
     for (int x = 0; x < map.width; x++) {
         for (int y = 0; y < map.height; y++) {
-            map.tileMap[x * map.width + y] = &(map.tiles["error"]);
+            map.tileMap[x * map.height + y] = &(map.tiles[0]);
         }
     }
 

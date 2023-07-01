@@ -13,7 +13,7 @@ Game::Game() {
     ui = UI();
 
     map = Map();
-    test_assignMap(map);
+    tutorial_assignMap(map);
 
     player = Player(map.startTile.x * map.tileSize, map.startTile.y * map.tileSize);
 

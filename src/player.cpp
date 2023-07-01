@@ -34,9 +34,11 @@ Player::Player(float x, float y) : Actor(x, y, 40, 80) {
     anims.setAnim("idle");
 
     Attack neutralA("neutral", 100.f, 110.f, hurtbox.size.x, -30.f, -100.f, 0.5f, 0.02f);
+    Attack pogo("neutral", 90.f, 90.f, -45.f + hurtbox.size.x / 2.f, hurtbox.size.y, 0.f, 0.5f, 0.05f);
 
     atks = AttackHandler();
     atks.attacks["neutral"] = neutralA;
+    atks.attacks["pogo"] = pogo;
     atks.current = &neutralA;
 
     earlyJumpTimer = Timer(.1f);
@@ -123,7 +125,10 @@ void Player::update(Map map, UI ui, float dt) {
 
     // Apply knockback
 
-    if (IsKeyDown(ui.action)) atks.play("neutral");
+    if (IsKeyDown(ui.action)) {
+        if (IsKeyDown(ui.down)) atks.play("pogo");
+        else atks.play("neutral");
+    }
     atks.update(position.x, position.y, dt);
 
     // Apply knockback

@@ -37,7 +37,7 @@ struct Map {
     Vector2 startTile;
 
     Tile** tileMap;
-    std::map<std::string, Tile> tiles;
+    std::map<int, Tile> tiles;
     Texture2D tileSheet;
 
     Map();
@@ -53,7 +53,7 @@ struct Map {
     void draw(Camera2D camera);
 };
 
-void test_assignMap(Map& map);
+void tutorial_assignMap(Map& map);
 
 
 #endif

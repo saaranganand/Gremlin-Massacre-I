@@ -1,8 +1,8 @@
 import PIL
 from PIL import Image
 
-name = "test"
-dir = "maps/"
+name = "tutorial"
+dir = "maps/tutorial/"
 map = Image.open(dir + name + ".png")
 mapPixels = map.load()
 
@@ -11,16 +11,10 @@ mapData = open(dir + name + ".data", "r")
 mapWidth = int(mapData.readline())
 mapHeight = int(mapData.readline())
 
-tileDict = {
-    1: "air",
-    2: "wall",
-    3: "spike"
-}
+print(mapWidth, mapHeight)
 
-mapStruct = open(dir + name + ".out", "x")
+mapStruct = open("../levels/tutorial/" + name + ".out", "x")
 
 for x in range(mapWidth):
     for y in range(mapHeight):
-        mapStruct.write(tileDict[mapPixels[x, y]])
-        if (x * mapWidth + y < mapWidth * mapHeight - 1):
-            mapStruct.write(",")
+        mapStruct.write(str(mapPixels[x, y]) + ",")

@@ -7,24 +7,18 @@
 #include <collider.h>
 #include <map.h>
 #include <ui.h>
-#include <attack.h>
 #include <animation.h>
 #include <timer.h>
+#include <attack.h>
 
 #define EARLY_JUMP_TIME .1f
 #define LATE_JUMP_TIME .1f
 
 
 struct Player: Actor {    
-    Attack neutral;
+    AttackHandler atks;
 
-    Animation idle;
-    Animation run;
-    Animation jump;
-    Animation die;
-    Animation attack;
-
-    Animation* current;
+    AnimationHandler anims;
 
     Timer earlyJumpTimer;
     Timer lateJumpTimer;

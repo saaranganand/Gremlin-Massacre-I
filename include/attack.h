@@ -6,32 +6,41 @@
 #include <defs.h>
 
 #include <vector>
+#include <string>
+#include <map>
 
 struct Attack {
-    Vector2 parentPosition;
-    
-    Vector2 offset;
     Collider hitbox;
+    std::string anim;
 
-    bool flipOffsetX;
-    bool flipOffsetY;
+    float xOffset;
+    float yOffset;
 
-    bool queued;
+    float flipXOffset;
 
-    float time;
-    int timeFramecount;
-    
+    float duration;
     float timeout;
-    int timeoutFramecount;
 
-    bool applyAffect;
-    bool pogo;
+    Attack(std::string ani = "idle", float w = 0.f, float h = 0.f, float xO = 0.f, float yO = 0.f, float fXO = 0.f, float dur = 0.f, float timeO = 0.f);
+};
 
-    Attack(Vector2 parentPos = ZERO, float x = 0.f, float y = 0.f, float w = 0.f, float h = 0.f, float t = 0.f, float to = 0.f);
-    void attempt();
-    void update(Vector2 parentPos, float dt);
-    void trigger(bool on);
-    void draw(bool debugging);
+struct AttackHandler {
+    std::map<const char*, Attack> attacks;
+    Attack* current;
+
+    float attackTime;
+    float attackLength;
+
+    float timeoutTime;
+    float timeoutLength;
+
+    bool active;
+    bool flipX;
+
+    AttackHandler();
+
+    void play(const char* name);
+    void update(float x, float y, float dt);
 };
 
 #endif

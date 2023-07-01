@@ -3,8 +3,10 @@
 
 #include <defs.h>
 #include <player.h>
+#include <gremlin.h>
 #include <ui.h>
 #include <map.h>
+#include <camera.h>
 
 struct Game {
     bool close;
@@ -12,6 +14,7 @@ struct Game {
     State state;
     UI ui;
     Player player;
+    Gremlin gremlin;
     Map map;
     Camera2D camera;
 

@@ -126,12 +126,13 @@ void Player::update(Map map, UI ui, float dt) {
     // Apply knockback
 
     if (IsKeyDown(ui.action)) {
-        if (IsKeyDown(ui.down)) atks.play("pogo");
+        if (IsKeyDown(ui.down) && !grounded) atks.play("pogo");
         else atks.play("neutral");
     }
     atks.update(position.x, position.y, dt);
 
     // Apply knockback
+
     if (!atks.active && CH_velocity.x != 0.f) {
         if (sign(CH_velocity.x) == 1) {
             anims.flipX = false;
@@ -142,14 +143,13 @@ void Player::update(Map map, UI ui, float dt) {
             atks.flipX = true;
         }
     }
-    
-
-    anims.update(dt);
 
     if (atks.active && atks.current != NULL) anims.current = &anims.animations[atks.current->anim.c_str()];
     else if (CH_velocity.y != 0.f || !grounded) anims.current = &anims.animations["jump"];
     else if (CH_velocity.x != 0.f) anims.current = &anims.animations["run"];
     else anims.current = &anims.animations["idle"];
+
+    anims.update(dt);
 
     /*
     if (IsKeyDown(ui.down) && !grounded) {
@@ -198,16 +198,7 @@ void Player::draw(bool debugging, float dt) {
     Color tint = WHITE;
     if (((int) (invincibilityTimer.elapsed * 10.f) % 2)) tint = DARKGRAY;
 
-    Rectangle dest = {
-        position.x - 5,
-        position.y - 40,
-        hurtbox.size.x * 1.5f,
-        hurtbox.size.y * 1.5f
-    };
-    if (sign(CH_velocity.x) == -1) dest.x -= 9;
-
     anims.draw(position.x, position.y, tint);
-    //neutral.draw(debugging);
 }
 
 void Player::drawHP() {

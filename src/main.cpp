@@ -38,6 +38,7 @@ int main() {
     }
     game.map.kill();
     game.player.kill();
+    game.gremlin.kill();
     CloseWindow();
     return 0;
 }

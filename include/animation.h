@@ -1,5 +1,5 @@
 #ifndef ANIMATION_H_
-#define ANIMTION_H_
+#define ANIMATION_H_
 
 #include <raylib.h>
 #include <map>

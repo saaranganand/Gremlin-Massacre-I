@@ -1,7 +1,5 @@
 #include <../include/raylib.h>
 #include <../include/game.h>
-#include <../include/defs.h>
-#include <../include/camera.h>
 
 #include <stdio.h>
 
@@ -16,6 +14,7 @@ Game::Game() {
     tutorial_assignMap(map);
 
     player = Player(map.startTile.x * map.tileSize, map.startTile.y * map.tileSize);
+    gremlin = Gremlin(68 * map.tileSize, 6 * map.tileSize);
 
     camera.target = player.position;
     camera.offset = { SCREEN_W /2.f, SCREEN_H / 2.f };
@@ -29,6 +28,7 @@ Game::Game() {
 
 void Game::update() {
     player.update(map, ui, dt);
+    gremlin.update(map, player, dt);
 
     updateCameraToMap(camera, player, map);
 
@@ -47,6 +47,7 @@ void Game::draw() {
     //if (debugging) drawGrid();
 
     player.draw(debugging, dt);
+    gremlin.draw(debugging, dt);
 
     EndMode2D();
 

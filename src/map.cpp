@@ -119,9 +119,9 @@ void tutorial_assignMap(Map& map) {
 
     if (map.instantiated) free(map.tileMap);
     map.instantiated = true;
-    map.width = 209;
-    map.height = 32;
-    map.startTile = { 20, 10 };
+    map.width = 98;
+    map.height = 23;
+    map.startTile = { 8, 6 };
     
     map.tileMap = (Tile**) malloc(map.width * map.height * sizeof(Tile*));
     

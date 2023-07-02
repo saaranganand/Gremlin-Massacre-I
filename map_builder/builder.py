@@ -5,7 +5,7 @@ rooms = ["tutorial", "room1", "room2", "room3"]
 
 for room in rooms:
     name = room
-    dir = "maps/" + name + "/"
+    dir = "maps/"
     map = Image.open(dir + name + ".png")
     mapPixels = map.load()
 

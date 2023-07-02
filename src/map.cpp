@@ -86,6 +86,31 @@ void Map::createTiles() {
     x+= 32;
     Tile ladder = Tile(LADDER);
     ladder.source = {x, 0.f, 32.f, 32.f};
+    x+= 32;
+
+    Tile z = Tile(BACKGROUND);
+    z.source = {x, 0.f, 32.f, 32.f};
+    x+= 32;
+    Tile xKey = Tile(BACKGROUND);
+    xKey.source = {x, 0.f, 32.f, 32.f};
+    x+= 32;
+    Tile c = Tile(BACKGROUND);
+    c.source = {x, 0.f, 32.f, 32.f};
+    x+= 32;
+    Tile up = Tile(BACKGROUND);
+    up.source = {x, 0.f, 32.f, 32.f};
+    x+= 32;
+    Tile left = Tile(BACKGROUND);
+    left.source = {x, 0.f, 32.f, 32.f};
+    x+= 32;
+    Tile down = Tile(BACKGROUND);
+    down.source = {x, 0.f, 32.f, 32.f};
+    x+= 32;
+    Tile right = Tile(BACKGROUND);
+    right.source = {x, 0.f, 32.f, 32.f};
+    x+= 32;
+    Tile plus = Tile(BACKGROUND);
+    plus.source = {x, 0.f, 32.f, 32.f};
     
     tiles[1] = wall1;
     tiles[2] = wall2;
@@ -103,6 +128,15 @@ void Map::createTiles() {
     tiles[13] = shop;
     tiles[14] = ladder;
     tiles[15] = transition;
+
+    tiles[16] = z;
+    tiles[17] = xKey;
+    tiles[18] = c;
+    tiles[19] = up;
+    tiles[20] = left;
+    tiles[21] = down;
+    tiles[22] = right;
+    tiles[23] = plus;
 }
 
 Map::Map() {

@@ -44,7 +44,7 @@ Game::Game() {
         } else if (player.currentBonfire == "room5") {
             load_5(d.bonfireX, d.bonfireY);
             player = Player(map.startTile.x * map.tileSize, map.startTile.y * map.tileSize);
-            player.bonfires["room5"] = {34, 68, 68, 80};
+            player.bonfires["room5"] = {33, 62, 68, 80};
             player.currentBonfire = "room5";
         }
 

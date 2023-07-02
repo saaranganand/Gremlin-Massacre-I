@@ -45,6 +45,7 @@ struct Player: Actor {
     Sound attack;
     Sound hitWall;
     Sound coin;
+    Sound bonfire;
 
     std::map<std::string, levelData> bonfires;
     std::string currentBonfire;

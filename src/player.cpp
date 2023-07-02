@@ -69,6 +69,7 @@ Player::Player(float x, float y) : Actor(x, y, 40, 80) {
     attack = LoadSound("assets/player/attack.wav");
     hitWall = LoadSound("assets/player/hitWall.wav");
     coin = LoadSound("assets/player/coin.wav");
+    bonfire = LoadSound("assets/player/bonfire.mp3");
 }
 
 void Player::handleJump(KeyboardKey jumpKey, Map map, float dt) {
@@ -177,7 +178,7 @@ bool Player::checkBonfire(Map map) {
     for (int x = leftColumn; x <= rightCloumn; x++) {
         for (int y = topRow; y <= bottomRow; y++) {
             if (map.getTile(x, y)->type == BONFIRE) {
-                //play healing sound
+                PlaySound(bonfire);
                 health = maxHealth;
                 estus = maxEstus;
                 if (!bonfires.count(map.mapName)) {
@@ -328,6 +329,7 @@ void Player::kill() {
     UnloadSound(attack);
     UnloadSound(hitWall);
     UnloadSound(coin);
+    UnloadSound(bonfire);
 }
 
 bool Player::load() {

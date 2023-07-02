@@ -20,6 +20,8 @@ UI::UI() {
 
     action = KEY_X;
     jump = KEY_Z;
+    heal = KEY_C;
+    dash = KEY_LEFT_SHIFT;
 
     menuState = 1;
     menuMax = 0;

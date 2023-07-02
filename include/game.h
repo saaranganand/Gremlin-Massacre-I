@@ -23,6 +23,9 @@ struct Game {
     Texture2D coinTexture;
     std::vector<Coin> coins;
 
+    Texture2D backTex;
+    Texture2D estusTex;
+
     float dt;
 
     bool debugging;

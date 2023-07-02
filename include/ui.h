@@ -17,6 +17,8 @@ struct UI {
 
     KeyboardKey action;
     KeyboardKey jump;
+    KeyboardKey heal;
+    KeyboardKey dash;
 
     int menuState;
     int menuMax;

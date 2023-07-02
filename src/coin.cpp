@@ -73,7 +73,7 @@ void Coin::collideWithVerticalStaticStage(Map map, float dt) {
     }
 
     // Reset movement velocity and check if actor is grounded.
-    velo.y *= -0.98;
+    velo.y *= -0.94;
     if (direction > 0) grounded = true;
 
     // Move to where the collision occured, with a small collision edge offset.
@@ -142,7 +142,7 @@ void Coin::collideWithHorizontalStaticStage(Map map, float dt) {
         return;
     }
 
-    velo.x *= -0.98;
+    velo.x *= -0.94;
 
     // Move to where the collision occured, with a small collision edge offset.
     position.x += (closest - movingEdge) - COLLISION_EDGE * direction;
@@ -166,7 +166,7 @@ bool Coin::update(Player& player, Map map, float dt) {
 }
 
 void Coin::draw(Texture2D tex) {
-    DrawTexturePro(tex, {0, 0, 20, 20}, {position.x, position.y, 20, 20}, ZERO, 0.f, WHITE);
+    DrawTexturePro(tex, {0, 0, 46, 52}, {position.x, position.y, 20, 25}, ZERO, 0.f, WHITE);
 }
 
 float Coin::left() {

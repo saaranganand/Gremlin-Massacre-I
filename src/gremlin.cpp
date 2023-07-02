@@ -139,8 +139,22 @@ void Gremlin::update(Map map, Player& player, std::vector<Coin>& coins, float dt
         
         takeDamage(1, 0.f, {dirX,dirY}, coins);
         invincibilityTimer.start();
+    }
 
-        
+    if (atks.active && atks.current != NULL) if (atks.current->hitbox.collides(player.hurtbox)) {
+        if (!player.invincibilityTimer.active) {
+            float dirX = 1;
+            float dirY = -1;
+
+            if (right() < player.left()) dirX = -1;
+            if (top() > player.bottom()) dirY = 1;
+
+            player.KB_velocity.x = -1000.f;
+            if (player.atks.flipX) player.KB_velocity.x = 1000.f;
+
+            player.takeDamage(1, 700.f, {-dirX, dirY});
+            player.invincibilityTimer.start();
+        }
     }
 
     if (atks.active && atks.current != NULL) anims.current = &anims.animations[atks.current->anim.c_str()];

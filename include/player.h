@@ -28,6 +28,8 @@ struct Player: Actor {
     Timer invincibilityTimer;
 
     int coins;
+    int estus;
+    int maxEstus;
 
     void loadAnimationsAtacks();
 
@@ -36,6 +38,8 @@ struct Player: Actor {
     void handleJump(KeyboardKey jumpKey, float dt);
 
     bool handleMapDamage(Map map);
+
+    bool checkBonfire(Map map);
 
     void update(Map map, UI ui, float dt);
     void draw(bool debugging, float dt);

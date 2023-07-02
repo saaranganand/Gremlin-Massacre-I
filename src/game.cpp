@@ -26,6 +26,8 @@ Game::Game() {
     debugging = true;
 
     coinTexture = loadTextureUnloadImage("assets/coin.png");
+    estusTex = loadTextureUnloadImage("assets/estus.png");
+    backTex = loadTextureUnloadImage("assets/bgimg.png");
 }
 
 void Game::update() {
@@ -51,6 +53,8 @@ void Game::draw() {
 
     ClearBackground(BLACK);
 
+    DrawTexturePro(backTex, {0, 0, 1920, 1080}, {0, -100, 1920, 1080}, ZERO, 0.f, WHITE);
+
     BeginMode2D(camera);
 
     map.draw(camera);
@@ -67,6 +71,8 @@ void Game::draw() {
     EndMode2D();
 
     player.drawHP();
+    DrawTexturePro(coinTexture, {0, 0, 46, 52}, { 20, 65, 50, 60}, ZERO, 0.f, WHITE);
+    DrawTexturePro(estusTex, {0, 0, 34, 34}, { 5, 120, 80, 80}, ZERO, 0.f, WHITE);
 
     //if (debugging) drawCameraCrosshair();
 
@@ -90,4 +96,6 @@ void Game::drawCameraCrosshair() {
 
 void Game::kill() {
     UnloadTexture(coinTexture);
+    UnloadTexture(backTex);
+    UnloadTexture(estusTex);
 }

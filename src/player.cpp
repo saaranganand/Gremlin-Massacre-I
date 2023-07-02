@@ -45,6 +45,9 @@ Player::Player(float x, float y) : Actor(x, y, 40, 80) {
     invincibilityTimer = Timer(2.f);
 
     coins = 0;
+
+    maxEstus = 0;
+    estus = 0;
 }
 
 void Player::handleJump(KeyboardKey jumpKey, float dt) {
@@ -95,6 +98,27 @@ bool Player::handleMapDamage(Map map) {
     return false;
 }
 
+bool Player::checkBonfire(Map map) {
+    // Loop through all cells that player currently lies in.
+    int leftColumn = left() / map.tileSize;
+    int rightCloumn = right() / map.tileSize;
+
+    int topRow = top() / map.tileSize;
+    int bottomRow = bottom() / map.tileSize;
+
+    for (int x = leftColumn; x <= rightCloumn; x++) {
+        for (int y = topRow; y <= bottomRow; y++) {
+            if (map.getTile(x, y)->type == BONFIRE) {
+                //play healing sound
+                health = maxHealth;
+                estus = maxEstus;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 void Player::update(Map map, UI ui, float dt) {
     deaccelerateKnockback(dt);
     applyGravity(dt);
@@ -120,7 +144,11 @@ void Player::update(Map map, UI ui, float dt) {
     // Take damage
     // Handle death
 
-    if (IsKeyDown(ui.action)) {
+    if (IsKeyPressed(ui.heal)) {
+        checkBonfire(map);
+    }
+
+    if (IsKeyPressed(ui.action)) {
         if (IsKeyDown(ui.down) && !grounded) atks.play("pogo");
         else atks.play("neutral");
     }
@@ -152,6 +180,11 @@ void Player::update(Map map, UI ui, float dt) {
 
     if (grounded && atks.current == &atks.attacks["pogo"] && atks.active) {
         atks.active = false;
+    }
+
+    if (IsKeyPressed(ui.heal) && estus > 0) {
+        estus--;
+        health++;
     }
 
     if (atks.active && atks.current != NULL) anims.current = &anims.animations[atks.current->anim.c_str()];
@@ -188,6 +221,7 @@ void Player::drawHP() {
     }
 
     DrawText(TextFormat("$ = %d", coins), 30, 80, 40, WHITE);
+    DrawText(TextFormat("E = %d", estus), 30, 150, 40, WHITE);
 }
 
 void Player::kill() {

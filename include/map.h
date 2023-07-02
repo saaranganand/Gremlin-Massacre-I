@@ -12,7 +12,7 @@
 #include <fstream>
 #include <sstream>
 
-enum TileType { STATIC = 0, DAMAGE, BACKGROUND, BREAKABLE, NONE };
+enum TileType { STATIC = 0, DAMAGE, BACKGROUND, BONFIRE, NONE };
 
 struct Tile {
     TileType type;

@@ -26,10 +26,20 @@ Player::Player(float x, float y) : Actor(x, y, 40, 80) {
     _jump.sheet = jump;
     anims.animations["jump"] = _jump;
 
-    Texture neutral = loadTextureUnloadImage("assets/player/neutral.png");
+    Texture fall = loadTextureUnloadImage("assets/player/midair.png");
+    Animation _fall = Animation(1, 30.f, 50.f, sourceWidth, sourceHeight, false, -25.f, -5.f, -45.f);
+    _fall.sheet = fall;
+    anims.animations["fall"] = _fall;
+
+    Texture neutralAttack = loadTextureUnloadImage("assets/player/attack.png");
     Animation _neutral = Animation(4, 66.f, 43.f, 66.f * 2.5f, 43.f * 2.5f, false, -110.f, -5.f, -27.f, 10);
-    _neutral.sheet = neutral;
+    _neutral.sheet = neutralAttack;
     anims.animations["neutral"] = _neutral;
+
+    Texture pogoAttack = loadTextureUnloadImage("assets/player/down-attack.png");
+    Animation _downATK = Animation(4, 66.f, 43.f, 66.f * 2.5f, 43.f * 2.5f, false, -110.f, -5.f, -27.f, 10);
+    _downATK.sheet = pogoAttack;
+    anims.animations["pogo"] = _downATK;
 
     anims.setAnim("idle");
 

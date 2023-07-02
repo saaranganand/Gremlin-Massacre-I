@@ -84,6 +84,11 @@ bool Player::handleMapDamage(Map map) {
     int topRow = top() / map.tileSize;
     int bottomRow = bottom() / map.tileSize;
 
+    clamp(leftColumn, 0, map.width - 1);
+    clamp(rightCloumn, 0, map.width - 1);
+    clamp(topRow, 0, map.height - 1);
+    clamp(bottomRow, 0, map.height - 1);
+
     for (int x = leftColumn; x <= rightCloumn; x++) {
         for (int y = topRow; y <= bottomRow; y++) {
             if (map.getTile(x, y)->type == DAMAGE) {
@@ -138,10 +143,11 @@ bool Player::checkBonfire(Map map) {
 }
 
 void Player::update(Map map, UI ui, float dt) {
+    
     deaccelerateKnockback(dt);
     applyGravity(dt);
     checkIfNotGrounded(dt);
-
+    
     handleJump(ui.jump, dt);
     collideWithVerticalStaticStage(map, dt);
 
@@ -155,19 +161,15 @@ void Player::update(Map map, UI ui, float dt) {
     //if (input != 0) PlaySound(walk);
 
     collideWithHorizontalStaticStage(map, dt);
-
     hurtbox.parentPosition.x = position.x;
-
     invincibilityTimer.update(dt);
     if (!invincibilityTimer.active && handleMapDamage(map)) invincibilityTimer.start();
-
+    
     // Take damage
     // Handle death
-
     if (IsKeyPressed(ui.heal)) {
         checkBonfire(map);
-    }
-
+    }   
     if (IsKeyPressed(ui.action)) {
         if (IsKeyDown(ui.down) && !grounded) atks.play("pogo");
         else atks.play("neutral");
@@ -182,7 +184,6 @@ void Player::update(Map map, UI ui, float dt) {
             PlaySound(hitWall);
         }
     }
-
     if (atks.active && atks.current == &atks.attacks["pogo"]) {
         if (hitStage(map, atks.current->hitbox, DAMAGE)) {
             CH_velocity.y = jumpVelocity;
@@ -199,7 +200,6 @@ void Player::update(Map map, UI ui, float dt) {
             atks.flipX = true;
         }
     }
-
     if (grounded && atks.current == &atks.attacks["pogo"] && atks.active) {
         atks.active = false;
     }
@@ -208,12 +208,12 @@ void Player::update(Map map, UI ui, float dt) {
         estus--;
         health++;
     }
-
+    
+    
     if (atks.active && atks.current != NULL) anims.current = &anims.animations[atks.current->anim.c_str()];
     else if (CH_velocity.y != 0.f || !grounded) anims.current = &anims.animations["fall"];
     else if (CH_velocity.x != 0.f) anims.current = &anims.animations["run"];
     else anims.current = &anims.animations["idle"];
-
     anims.update(dt);
 }
 

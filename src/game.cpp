@@ -44,6 +44,12 @@ void Game::update() {
     for (Gremlin& a : gremlins) {
         a.update(map, player, coins, dt);
     }
+    for (Frog& a : frogs) {
+        a.update(map, player, coins, dt);
+    }
+    for (Golden a : goldens) {
+        a.update(map, player, coins, dt);
+    }
     updateCameraToMap(camera, player, map);
     int i = 0;
     for (Coin& c : coins) {
@@ -72,6 +78,12 @@ void Game::draw() {
 
     player.draw(debugging, dt);
     for (Gremlin a : gremlins) {
+        a.draw(debugging, dt);
+    }
+    for (Frog a : frogs) {
+        a.draw(debugging, dt);
+    }
+    for (Golden a : goldens) {
         a.draw(debugging, dt);
     }
 
@@ -141,6 +153,10 @@ void Game::youDiedDraw() {
     player.draw(debugging, dt);
     
     for (Gremlin a : gremlins) {
+        a.draw(debugging, dt);
+    }
+
+    for (Golden a : goldens) {
         a.draw(debugging, dt);
     }
 
@@ -251,10 +267,15 @@ void Game::transitionStage() {
                         map.reset();
                         load_4(55, 13);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
-                    } else {
+                    } else if ((player.position.x / map.tileSize) > 94){
                         map.reset();
                         load_2(27, 2);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
+                    } else {
+                        map.reset();
+                        load_1(97, 2);
+                        player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
+
                     }
                 } else if (map.mapName == "room4") {
                     map.reset();
@@ -292,7 +313,15 @@ void Game::emptyEntites() {
     for (Gremlin a : gremlins) {
         a.kill();
     }
+    for (Frog a : frogs) {
+        a.kill();
+    }
+    for (Golden a : goldens) {
+        a.kill();
+    }
     gremlins.clear();
+    goldens.clear();
+    frogs.clear();
 }
 
 void Game::kill() {
@@ -306,7 +335,6 @@ void Game::kill() {
 void Game::load_tutorial(float x, float y) {
     map.assignMap("levels/tutorial.out", 98, 23, {x, y}, {14, 6});
     map.mapName = "tutorial";
-
     gremlins.push_back(Gremlin(69 * map.tileSize, 8 * map.tileSize));
 }
 
@@ -329,6 +357,8 @@ void Game::load_1(float x, float y) {
     gremlins.push_back(Gremlin(80 * map.tileSize, 22 * map.tileSize));
     gremlins.push_back(Gremlin(81 * map.tileSize, 22 * map.tileSize));
     gremlins.push_back(Gremlin(82 * map.tileSize, 22 * map.tileSize));
+
+    goldens.push_back(Golden(78 * map.tileSize, 22 * map.tileSize));
 }
 
 void Game::load_2(float x, float y) {
@@ -340,6 +370,9 @@ void Game::load_2(float x, float y) {
     gremlins.push_back(Gremlin(42 * map.tileSize, 39 * map.tileSize));
     gremlins.push_back(Gremlin(35 * map.tileSize, 73 * map.tileSize));
     gremlins.push_back(Gremlin(77 * map.tileSize, 75 * map.tileSize));
+
+    goldens.push_back(Golden(68 * map.tileSize, 54 * map.tileSize));
+
 }
 
 void Game::load_3(float x, float y) {
@@ -349,13 +382,29 @@ void Game::load_3(float x, float y) {
     gremlins.push_back(Gremlin(95 * map.tileSize, 123 * map.tileSize));
     gremlins.push_back(Gremlin(85 * map.tileSize, 100 * map.tileSize));
     gremlins.push_back(Gremlin(35 * map.tileSize, 76 * map.tileSize));
+
+    frogs.push_back(Frog(7 * map.tileSize, 21 * map.tileSize));
+    frogs.push_back(Frog(33 * map.tileSize, 16 * map.tileSize));
+
+    frogs.push_back(Frog(58 * map.tileSize, 55 * map.tileSize));
+    frogs.push_back(Frog(34 * map.tileSize, 77 * map.tileSize));
+    frogs.push_back(Frog(104 * map.tileSize, 55 * map.tileSize));
+    frogs.push_back(Frog(109 * map.tileSize, 77 * map.tileSize));
+    frogs.push_back(Frog(140 * map.tileSize, 136 * map.tileSize));
+
+    goldens.push_back(Golden(93 * map.tileSize, 88 * map.tileSize));
+
 }
 
 void Game::load_4(float x, float y) {
     map.assignMap("levels/room4.out", 57, 26, {x, y});
     map.mapName = "room4";
     //frog room
-
+    for (int i = 17; i < 41; i++) {
+        frogs.push_back(Frog(i * map.tileSize, 20 * map.tileSize));
+        frogs.push_back(Frog(i * map.tileSize, 19 * map.tileSize));
+    }
+    
 }
 
 void Game::load_5(float x, float y) {

@@ -10,8 +10,10 @@
 #include <map.h>
 #include <camera.h>
 #include <coin.h>
+#include <frog.h>
 #include <vector>
 #include <utility>
+#include <golden.h>
 
 struct Game {
     bool close;
@@ -29,6 +31,8 @@ struct Game {
     Texture2D estusTex;
 
     std::vector<Gremlin> gremlins;
+    std::vector<Frog> frogs;
+    std::vector<Golden> goldens;
 
     Sound YOUDEAD;
 

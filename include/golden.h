@@ -1,28 +1,20 @@
-#ifndef FROG_H_
-#define FROG_H_
+#ifndef GOLDEN_H_
+#define GOLDEN_H_
 
 #include <raylib.h>
 #include <actor.h>
-#include <player.h>
-#include <collider.h>
-#include <animation.h>
 #include <coin.h>
+#include <player.h>
+#include <timer.h>
 
-struct Frog : Actor {
-    float AggroRange;
+struct Golden : Actor {
 
-    Collider hitbox;
+    Timer invincibilityTimer;
 
-    float aggroRange;
-    bool aggroed;
-
-    Sound action;
     Sound hurt;
     Sound explosion;
 
-    Frog(float x = 0.f, float y = 0.f);
-
-    void frogJump();
+    Golden(float x = 0.f, float y = 0.f);
 
     void explode(std::vector<Coin>& coins);
     void takeDamage(int damage, float knockback, Vector2 KB_dir, std::vector<Coin>& coins);

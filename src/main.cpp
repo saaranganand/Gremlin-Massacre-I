@@ -18,6 +18,10 @@ int main() {
     while (!WindowShouldClose() && !game.close) {
         game.dt = GetFrameTime();
 
+        if (!IsMusicStreamPlaying(game.music)) PlayMusicStream(game.music);
+
+        UpdateMusicStream(game.music);
+
         switch (game.state) {
             case MENU:
                 game.state = game.ui.menuing();
@@ -25,6 +29,7 @@ int main() {
                 break;
 
             case PLAY:
+                SetMusicVolume(game.music, 0.5f);
                 game.update();
                 game.draw();
                 if (game.state == YOUDIED) PlaySound(game.YOUDEAD);

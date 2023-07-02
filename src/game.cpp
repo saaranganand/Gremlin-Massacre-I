@@ -70,6 +70,9 @@ Game::Game() {
     YOUDEAD = LoadSound("assets/youdied.mp3");
 
     youdiedFrames = 0;
+
+    music = LoadMusicStream("assets/peaktheme.mp3");
+    PlayMusicStream(music);
 }
 
 void Game::update() {
@@ -433,6 +436,7 @@ void Game::kill() {
     UnloadTexture(backTex);
     UnloadTexture(estusTex);
     UnloadSound(YOUDEAD);
+    UnloadMusicStream(music);
     emptyEntites();
 }
 

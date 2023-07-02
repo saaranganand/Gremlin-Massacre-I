@@ -36,6 +36,8 @@ struct Game {
 
     Sound YOUDEAD;
 
+    Music music;
+
     int youdiedFrames;
 
     float dt;

@@ -192,13 +192,7 @@ void Map::draw(Camera2D camera) {
                 Rectangle dest = { i * tileSize, y * tileSize, tileSize, tileSize };
 
                 float rotation = 0.f;
-                if (i > 0) {
-                    if (getTile(i - 1, y)->type == DAMAGE) {
-                        if (getTile(i - 1, y)->type == STATIC) rotation = 3 * PI / 2;
-                        if (getTile(i + 1, y)->type == STATIC) rotation = PI / 2;
-                        if (getTile(i, y - 1)->type == STATIC) rotation = PI;
-                    }
-                }
+
                 
                 
                 DrawTexturePro(tileSheet, src, dest, ZERO, rotation, WHITE);

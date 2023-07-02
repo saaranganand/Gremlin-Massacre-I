@@ -1,7 +1,7 @@
 import PIL
 from PIL import Image
 
-name = "room3"
+name = "room2"
 dir = "maps/" + name + "/"
 map = Image.open(dir + name + ".png")
 mapPixels = map.load()

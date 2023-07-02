@@ -13,7 +13,7 @@ Tile::Tile(TileType tp, int dmg, bool pog, int hp) {
     active = true;
 }
 
-void Map::writeMap(const char* file) {
+void Map::writeMap(std::string file) {
     std::ifstream mapData(file);
     int t = 0;
 
@@ -83,6 +83,9 @@ void Map::createTiles() {
     x+= 32;
     Tile shop = Tile(SHOP);
     shop.source = {x, 0.f, 32.f, 32.f};
+    x+= 32;
+    Tile ladder = Tile(LADDER);
+    ladder.source = {x, 0.f, 32.f, 32.f};
     
     tiles[1] = wall1;
     tiles[2] = wall2;
@@ -98,6 +101,7 @@ void Map::createTiles() {
     tiles[11] = bonfire;
     tiles[12] = spike;
     tiles[13] = shop;
+    tiles[14] = ladder;
     tiles[15] = transition;
 }
 
@@ -109,6 +113,7 @@ Map::Map() {
 
     tileSize = 55;
     startTile = { 0, 0 };
+    bonfireCoords = { 0, 0 };
 
     tileSheet = loadTextureUnloadImage("assets/tileSheet.png");
     createTiles();
@@ -167,13 +172,14 @@ void Map::draw(Camera2D camera) {
     }
 }
 
-void Map::assignMap(const char* mapName, int w, int h, Vector2 sT) {
+void Map::assignMap(std::string mapName, int w, int h, Vector2 sT, Vector2 bC) {
     if (instantiated) free(tileMap);
     instantiated = true;
 
     width = w;
     height = h;
     startTile = sT;
+    bonfireCoords = bC;
 
     tileMap = (Tile**) malloc(width * height * sizeof(Tile*));
 

@@ -13,7 +13,7 @@
 #include <sstream>
 #include <functional>
 
-enum TileType { STATIC = 0, DAMAGE, BACKGROUND, BONFIRE, TRANSITION, SHOP, NONE };
+enum TileType { STATIC = 0, DAMAGE, BACKGROUND, BONFIRE, TRANSITION, SHOP, LADDER, NONE };
 
 struct Tile {
     TileType type;
@@ -42,9 +42,11 @@ struct Map {
     Texture2D tileSheet;
     std::string mapName;
 
+    Vector2 bonfireCoords;
+
     Map();
 
-    void writeMap(const char* file);
+    void writeMap(std::string file);
     void createTiles();
 
     void kill();
@@ -52,7 +54,7 @@ struct Map {
 
     Tile* getTile(int x, int y);
 
-    void assignMap(const char* mapName, int w, int h, Vector2 sT);
+    void assignMap(std::string mapName, int w, int h, Vector2 sT, Vector2 bC = ZERO);
 
     void draw(Camera2D camera);
 };

@@ -5,6 +5,17 @@
 #include <math.h>
 #include <stdio.h>
 
+void Player::resetDeath() {
+    health = maxHealth;
+    estus = maxEstus;
+
+    CH_velocity.x = 0.f;
+    CH_velocity.y = 0.f;
+
+    KB_velocity.x = 0.f;
+    KB_velocity.y = 0.f;
+}
+
 void Player::loadAnimationsAtacks() {
     anims = AnimationHandler();
     
@@ -56,13 +67,13 @@ Player::Player(float x, float y) : Actor(x, y, 40, 80) {
     coin = LoadSound("assets/player/coin.wav");
 }
 
-void Player::handleJump(KeyboardKey jumpKey, float dt) {
+void Player::handleJump(KeyboardKey jumpKey, Map map, float dt) {
     // Allow the player to jump before they touch the ground or after they leave the ground by a small margin.
     if (IsKeyDown(jumpKey)) earlyJumpTimer.start();
     else earlyJumpTimer.kill();
 
     // Trigger jump.
-    if (earlyJumpTimer.active && (grounded || lateJumpTimer.active)) {
+    if (earlyJumpTimer.active && ((grounded || lateJumpTimer.active) || checkLadder(map))) {
         grounded = false;
         CH_velocity.y = jumpVelocity;
 
@@ -130,12 +141,44 @@ bool Player::checkBonfire(Map map) {
     int topRow = top() / map.tileSize;
     int bottomRow = bottom() / map.tileSize;
 
+    clamp(leftColumn, 0, map.width - 1);
+    clamp(rightCloumn, 0, map.width - 1);
+    clamp(topRow, 0, map.height - 1);
+    clamp(bottomRow, 0, map.height - 1);
+
     for (int x = leftColumn; x <= rightCloumn; x++) {
         for (int y = topRow; y <= bottomRow; y++) {
             if (map.getTile(x, y)->type == BONFIRE) {
                 //play healing sound
                 health = maxHealth;
                 estus = maxEstus;
+                if (!bonfires.count(map.mapName)) {
+                    bonfires[map.mapName] = {map.bonfireCoords.x, map.bonfireCoords.y, map.width, map.height};
+                }
+                currentBonfire = map.mapName;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool Player::checkLadder(Map map) {
+    // Loop through all cells that player currently lies in.
+    int leftColumn = left() / map.tileSize;
+    int rightCloumn = right() / map.tileSize;
+
+    int topRow = top() / map.tileSize;
+    int bottomRow = bottom() / map.tileSize;
+
+    clamp(leftColumn, 0, map.width - 1);
+    clamp(rightCloumn, 0, map.width - 1);
+    clamp(topRow, 0, map.height - 1);
+    clamp(bottomRow, 0, map.height - 1);
+
+    for (int x = leftColumn; x <= rightCloumn; x++) {
+        for (int y = topRow; y <= bottomRow; y++) {
+            if (map.getTile(x, y)->type == LADDER) {
                 return true;
             }
         }
@@ -149,7 +192,7 @@ void Player::update(Map map, UI ui, float dt) {
     applyGravity(dt);
     checkIfNotGrounded(dt);
     
-    handleJump(ui.jump, dt);
+    handleJump(ui.jump, map, dt);
     collideWithVerticalStaticStage(map, dt);
 
     hurtbox.parentPosition.y = position.y;

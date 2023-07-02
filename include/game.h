@@ -38,7 +38,10 @@ struct Game {
 
     void update();
     void draw();
+
+    void youDiedUpdate();
     void youDiedDraw();
+
     void drawGrid();
     void drawCameraCrosshair();
     void transitionStage();

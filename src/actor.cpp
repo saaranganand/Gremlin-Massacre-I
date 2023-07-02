@@ -220,13 +220,15 @@ void Actor::collideWithHorizontalStaticStage(Map map, float dt) {
 
 void Actor::takeDamage(int damage, float knockback, Vector2 KB_dir) {
     health -= damage;
-    if (health < 0) {
-        // handle
+    if (health <= 0) {
+        kill();
         health = 0;
+        KB_velocity.x = 2500.f * KB_dir.x;
+        KB_velocity.y = 2500.f * KB_dir.y;
+    } else {
+        KB_velocity.x = knockback * KB_dir.x;
+        KB_velocity.y = knockback * KB_dir.y;
     }
-
-    KB_velocity.x = knockback * KB_dir.x;
-    KB_velocity.y = knockback * KB_dir.y;
 }
 
 bool Actor::hitStage(Map map, Collider box, TileType tType) {
@@ -246,6 +248,10 @@ bool Actor::hitStage(Map map, Collider box, TileType tType) {
         }
     }
     return false;
+}
+
+void Actor::kill() {
+    alive = false;
 }
 
 float Actor::left() {

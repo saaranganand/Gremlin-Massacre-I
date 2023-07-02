@@ -38,6 +38,11 @@ Gremlin::Gremlin(float x, float y) : Actor(x, y, 30, 50) {
 
     scaredTimer = Timer(4.f);
     scaredRunTimer = Timer(1.f);
+
+    invincibilityTimer = Timer(2.f);
+
+    maxHealth = 3;
+    health = 3;
 }
 
 void Gremlin::gremlinJump() {
@@ -47,7 +52,18 @@ void Gremlin::gremlinJump() {
     }
 }
 
-void Gremlin::update(Map map, Player player, float dt) {
+void Gremlin::update(Map map, Player& player, float dt) {
+    if (!alive) {
+        deaccelerateKnockback(dt);
+        applyGravity(dt);
+        checkIfNotGrounded(dt);
+
+        collideWithVerticalStaticStage(map, dt);
+        hurtbox.parentPosition.y = position.y;
+        collideWithHorizontalStaticStage(map, dt);
+        hurtbox.parentPosition.x = position.x;
+        return;
+    }
     deaccelerateKnockback(dt);
     applyGravity(dt);
     checkIfNotGrounded(dt);
@@ -127,8 +143,11 @@ void Gremlin::update(Map map, Player player, float dt) {
         if (right() < player.left()) dirX = -1;
         if (top() > player.bottom()) dirY = 1;
         
-        takeDamage(1, 2500.f, {dirX,dirY});
+        takeDamage(1, 0.f, {dirX,dirY});
         invincibilityTimer.start();
+
+        player.KB_velocity.x = -1000.f;
+        if (player.atks.flipX) player.KB_velocity.x = 1000.f;
     }
 
     if (atks.active && atks.current != NULL) anims.current = &anims.animations[atks.current->anim.c_str()];

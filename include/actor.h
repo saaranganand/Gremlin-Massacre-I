@@ -64,6 +64,8 @@ struct Actor {
 
     bool hitStage(Map map, Collider box, TileType tType);
 
+    void kill();
+
     float left();
     float right();
     float top();

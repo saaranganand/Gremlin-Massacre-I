@@ -25,7 +25,7 @@ struct Gremlin : Actor {
 
     void gremlinJump();
 
-    void update(Map map, Player player, float dt);
+    void update(Map map, Player& player, float dt);
     void draw(bool debugging, float dt);
 
     void kill();

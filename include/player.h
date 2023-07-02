@@ -24,7 +24,6 @@ struct Player: Actor {
 
     float pogoKB;
     float pogoDeAccel;
-
     
     Timer invincibilityTimer;
 

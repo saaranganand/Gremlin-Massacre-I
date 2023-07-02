@@ -11,6 +11,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <functional>
 
 enum TileType { STATIC = 0, DAMAGE, BACKGROUND, BONFIRE, TRANSITION, SHOP, NONE };
 
@@ -39,6 +40,7 @@ struct Map {
     Tile** tileMap;
     std::map<int, Tile> tiles;
     Texture2D tileSheet;
+    std::string mapName;
 
     Map();
 
@@ -50,10 +52,10 @@ struct Map {
 
     Tile* getTile(int x, int y);
 
+    void assignMap(const char* mapName, int w, int h, Vector2 sT);
+
     void draw(Camera2D camera);
 };
-
-void tutorial_assignMap(Map& map);
 
 
 #endif

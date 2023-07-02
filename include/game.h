@@ -26,6 +26,10 @@ struct Game {
     Texture2D backTex;
     Texture2D estusTex;
 
+    Sound youdied;
+
+    int youdiedFrames;
+
     float dt;
 
     bool debugging;
@@ -37,6 +41,7 @@ struct Game {
     void youDiedDraw();
     void drawGrid();
     void drawCameraCrosshair();
+    void transitionStage();
 
     void kill();
 };

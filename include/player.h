@@ -34,7 +34,7 @@ struct Player: Actor {
     Sound hurt;
     Sound attack;
     Sound hitWall;
-    Sound walk;
+    Sound coin;
 
     void loadAnimationsAtacks();
 

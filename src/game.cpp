@@ -11,7 +11,10 @@ Game::Game() {
     ui = UI();
 
     map = Map();
-    tutorial_assignMap(map);
+    map.assignMap("levels/tutorial.out", 98, 23, {9, 6});
+    map.mapName = "tutorial";
+
+    printf("%.2f %.2f %.2f \n", map.startTile.x, map.startTile.y, map.tileSize);
 
     player = Player(map.startTile.x * map.tileSize, map.startTile.y * map.tileSize);
     gremlin = Gremlin(68 * map.tileSize, 6 * map.tileSize);
@@ -28,6 +31,10 @@ Game::Game() {
     coinTexture = loadTextureUnloadImage("assets/coin.png");
     estusTex = loadTextureUnloadImage("assets/estus.png");
     backTex = loadTextureUnloadImage("assets/bgimg.png");
+
+    youdied = LoadSound("assets/youdied.mp3");
+
+    youdiedFrames = 0;
 }
 
 void Game::update() {
@@ -109,13 +116,23 @@ void Game::youDiedDraw() {
     DrawTexturePro(coinTexture, {0, 0, 46, 52}, { 20, 65, 50, 60}, ZERO, 0.f, WHITE);
     DrawTexturePro(estusTex, {0, 0, 34, 34}, { 5, 120, 80, 80}, ZERO, 0.f, WHITE);
 
-        Color col = BLACK;
-    col.a = 125;
+    
+    if (youdiedFrames < 255) youdiedFrames++;
+
+    Color col = BLACK;
+    col.a = youdiedFrames;
+
+    Color col2 = RED;
+    col2.a = youdiedFrames;
+
+    if (col2.a > 255) col2.a = 255;
+    if (col.a > 255) col.a = 255;
 
     float hei = 400;
 
     DrawRectangle(0, (SCREEN_H - hei) / 2.f, SCREEN_W, hei, col);
-    DrawText("YOU DIED", (SCREEN_W - MeasureText("YOU DIED", 200)) / 2.f, (SCREEN_H - hei) / 2.f + 100, 200, RED);
+    DrawText("YOU DIED", (SCREEN_W - MeasureText("YOU DIED", 200)) / 2.f, (SCREEN_H - hei) / 2.f + 100, 200, col2);
+    DrawText("Press z", (SCREEN_W - MeasureText("Press z", 100)) / 2.f, (SCREEN_H - hei) / 2.f + 100 + 200, 100, col2);
 
     EndDrawing();
 
@@ -136,8 +153,36 @@ void Game::drawCameraCrosshair() {
     DrawLine(SCREEN_W / 2.f, 0, SCREEN_W / 2.f, SCREEN_H, GREEN);
 }
 
+void Game::transitionStage() {
+    // Loop through all cells that player currently lies in.
+    int leftColumn = player.left() / map.tileSize;
+    int rightCloumn = player.right() / map.tileSize;
+
+    int topRow = player.top() / map.tileSize;
+    int bottomRow = player.bottom() / map.tileSize;
+
+    for (int x = leftColumn; x <= rightCloumn; x++) {
+        for (int y = topRow; y <= bottomRow; y++) {
+            if (map.getTile(x, y)->type == TRANSITION) {
+                printf("BAD!\n");
+                if (map.mapName == "tutorial") {
+                    map.reset();
+                    map.assignMap("levels/room1.out", 144, 48, {1, 125});
+                    map.mapName = "room1";
+                }
+                if (map.mapName == "room1") {
+                    map.reset();
+                    map.assignMap("levels/tutorial.out", 98, 23, {9, 6});
+                    map.mapName = "tutorial";
+                }
+            }
+        }
+    }
+}
+
 void Game::kill() {
     UnloadTexture(coinTexture);
     UnloadTexture(backTex);
     UnloadTexture(estusTex);
+    UnloadSound(youdied);
 }

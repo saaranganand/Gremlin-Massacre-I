@@ -160,6 +160,7 @@ bool Coin::update(Player& player, Map map, float dt) {
 
     if (col.collides(player.hurtbox)) {
         player.coins++;
+        PlaySound(player.coin);
         return true;
     }
     return false;

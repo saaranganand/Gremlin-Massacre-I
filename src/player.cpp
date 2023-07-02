@@ -52,7 +52,7 @@ Player::Player(float x, float y) : Actor(x, y, 40, 80) {
     hurt = LoadSound("assets/player/hurt.wav");
     attack = LoadSound("assets/player/attack.wav");
     hitWall = LoadSound("assets/player/hitWall.wav");
-    walk = LoadSound("assets/player/walk.wav");
+    coin = LoadSound("assets/player/coin.wav");
 }
 
 void Player::handleJump(KeyboardKey jumpKey, float dt) {
@@ -152,7 +152,7 @@ void Player::update(Map map, UI ui, float dt) {
     if (IsKeyDown(ui.right)) input++;
     handleInput(input, dt);
 
-    if (input != 0) PlaySound(walk);
+    //if (input != 0) PlaySound(walk);
 
     collideWithHorizontalStaticStage(map, dt);
 
@@ -251,5 +251,5 @@ void Player::kill() {
     UnloadSound(hurt);
     UnloadSound(attack);
     UnloadSound(hitWall);
-    UnloadSound(walk);
+    UnloadSound(coin);
 }

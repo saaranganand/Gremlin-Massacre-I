@@ -10,7 +10,7 @@ Gremlin::Gremlin(float x, float y) : Actor(x, y, 30, 50) {
 
     createAnimation("gremlin/", "idle", 1, {32,32}, dest, false, offset, fxOff);
     createAnimation("gremlin/", "run", 4, {32,32}, dest, true, offset, fxOff);
-    //createAnimation("gremlin/", "fall", 1, {32,32}, dest, false, offset, fxOff);
+    createAnimation("gremlin/", "fall", 1, {32,32}, dest, false, offset, fxOff);
     createAnimation("gremlin/", "death", 4, {32,32}, dest, false, offset, fxOff);
     createAnimation("gremlin/", "neutral", 5, {32,32}, dest, true, offset, fxOff);
 
@@ -108,7 +108,7 @@ void Gremlin::update(Map map, Player& player, std::vector<Coin>& coins, float dt
 
     handleInput(input, dt);
 
-    if (input != 0) PlaySound(walk);
+    //if (input != 0) PlaySound(walk);
 
     collideWithHorizontalStaticStage(map, dt);
 
@@ -168,7 +168,7 @@ void Gremlin::update(Map map, Player& player, std::vector<Coin>& coins, float dt
     }
 
     if (atks.active && atks.current != NULL) anims.current = &anims.animations[atks.current->anim.c_str()];
-    //else if (CH_velocity.y != 0.f || !grounded) anims.current = &anims.animations["fall"];
+    else if (CH_velocity.y != 0.f || !grounded) anims.current = &anims.animations["fall"];
     else if (CH_velocity.x != 0.f) anims.current = &anims.animations["run"];
     else anims.current = &anims.animations["idle"];
 

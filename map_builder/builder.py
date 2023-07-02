@@ -1,8 +1,8 @@
 import PIL
 from PIL import Image
 
-name = "tutorial"
-dir = "maps/tutorial/"
+name = "room1"
+dir = "maps/room1/"
 map = Image.open(dir + name + ".png")
 mapPixels = map.load()
 
@@ -13,7 +13,7 @@ mapHeight = int(mapData.readline())
 
 print(mapWidth, mapHeight)
 
-mapStruct = open("../levels/tutorial/" + name + ".out", "x")
+mapStruct = open("../levels/" + name + ".out", "x")
 
 for x in range(mapWidth):
     for y in range(mapHeight):

@@ -152,24 +152,22 @@ void Map::draw(Camera2D camera) {
     }
 }
 
-void tutorial_assignMap(Map& map) {
-    const char* mapName = "levels/tutorial/tutorial.out";
+void Map::assignMap(const char* mapName, int w, int h, Vector2 sT) {
+    if (instantiated) free(tileMap);
+    instantiated = true;
 
-    if (map.instantiated) free(map.tileMap);
-    map.instantiated = true;
-    map.width = 98;
-    map.height = 23;
-    map.startTile = { 8, 6 };
-    
-    map.tileMap = (Tile**) malloc(map.width * map.height * sizeof(Tile*));
-    
+    width = w;
+    height = h;
+    startTile = sT;
+
+    tileMap = (Tile**) malloc(width * height * sizeof(Tile*));
 
     // Init map with error tiles, in case loading fails.
-    for (int x = 0; x < map.width; x++) {
-        for (int y = 0; y < map.height; y++) {
-            map.tileMap[x * map.height + y] = &(map.tiles[0]);
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+            tileMap[x * height + y] = &(tiles[0]);
         }
     }
 
-    map.writeMap(mapName);
+    writeMap(mapName);
 }

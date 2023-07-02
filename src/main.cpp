@@ -11,7 +11,7 @@ int main() {
     InitWindow(SCREEN_W, SCREEN_H, "template");
 
     InitAudioDevice();
-    SetMasterVolume(0.5f);
+    SetMasterVolume(0.7f);
     
     Game game = Game();
 
@@ -27,6 +27,7 @@ int main() {
             case PLAY:
                 game.update();
                 game.draw();
+                if (game.state == YOUDIED) PlaySound(game.youdied);
                 break;
             case YOUDIED:
                 game.youDiedDraw();

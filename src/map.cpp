@@ -41,27 +41,37 @@ void Map::writeMap(const char* file) {
 }
 
 void Map::createTiles() {
+    float x = 0;
     Tile wall1 = Tile(STATIC);
-    wall1.source = {0, 0, 32, 32};
+    wall1.source = {x, 0, 32, 32};
+    x+=32;
     Tile wall2 = Tile(STATIC);
-    wall2.source = {0, 0, 32, 32};
+    wall2.source = {x, 0, 32, 32};
+    x+=32;
     Tile wall3 = Tile(STATIC);
-    wall3.source = {0, 0, 32, 32};
+    wall3.source = {x, 0, 32, 32};
+    x+=32;
     Tile wall4 = Tile(STATIC);
-    wall4.source = {0, 0, 32, 32};
+    wall4.source = {x, 0, 32, 32};
+    x+=32;
     Tile wall5 = Tile(STATIC);
-    wall5.source = {0, 0, 32, 32};
+    wall5.source = {x, 0, 32, 32};
+    x+=32;
     Tile wall6 = Tile(STATIC);
-    wall6.source = {0, 0, 32, 32};
+    wall6.source = {x, 0, 32, 32};
+    x+=32;
     Tile wall7 = Tile(STATIC);
-    wall7.source = {0, 0, 32, 32};
+    wall7.source = {x, 0, 32, 32};
+    x+=32;
     Tile wall8 = Tile(STATIC);
-    wall8.source = {0, 0, 32, 32};
+    wall8.source = {x, 0, 32, 32};
+    x+=32;
     Tile wall9 = Tile(STATIC);
-    wall9.source = {0, 0, 32, 32};
+    wall9.source = {x, 0, 32, 32};
+    x+=32;
 
     Tile air = Tile(NONE);
-    air.source = {192.f, 0.f, 32.f, 32.f};
+    air.source = {x, 0.f, 32.f, 32.f};
 
     tiles[1] = wall1;
     tiles[2] = wall2;

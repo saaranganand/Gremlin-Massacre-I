@@ -39,6 +39,7 @@ int main() {
     game.map.kill();
     game.player.kill();
     game.gremlin.kill();
+    game.kill();
     CloseWindow();
     return 0;
 }

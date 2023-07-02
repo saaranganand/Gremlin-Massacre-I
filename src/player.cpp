@@ -43,6 +43,8 @@ Player::Player(float x, float y) : Actor(x, y, 40, 80) {
 
     pogoDeAccel = 700.f;
     invincibilityTimer = Timer(2.f);
+
+    coins = 0;
 }
 
 void Player::handleJump(KeyboardKey jumpKey, float dt) {
@@ -184,6 +186,8 @@ void Player::drawHP() {
         DrawRectangleLinesEx(rec, 5, BLACK);
         rec.x += 40;
     }
+
+    DrawText(TextFormat("$ = %d", coins), 30, 80, 40, WHITE);
 }
 
 void Player::kill() {

@@ -24,13 +24,24 @@ Game::Game() {
     dt = 0.016667f;
 
     debugging = true;
+
+    coinTexture = loadTextureUnloadImage("assets/coin.png");
 }
 
 void Game::update() {
     player.update(map, ui, dt);
-    gremlin.update(map, player, dt);
+    gremlin.update(map, player, coins, dt);
 
     updateCameraToMap(camera, player, map);
+
+    int i = 0;
+    for (Coin& c : coins) {
+        if (c.update(player, map, dt)) {
+            coins.erase(coins.begin() + i);
+            i--;
+        }
+        i++;
+    }
 
     if (IsKeyPressed(ui.pause)) state = MENU;
 }
@@ -48,6 +59,10 @@ void Game::draw() {
 
     player.draw(debugging, dt);
     gremlin.draw(debugging, dt);
+
+    for (Coin c : coins) {
+        c.draw(coinTexture);
+    }
 
     EndMode2D();
 
@@ -71,4 +86,8 @@ void Game::drawGrid() {
 void Game::drawCameraCrosshair() {
     DrawLine(0, SCREEN_H / 2.f, SCREEN_W, SCREEN_H / 2.f, GREEN);
     DrawLine(SCREEN_W / 2.f, 0, SCREEN_W / 2.f, SCREEN_H, GREEN);
+}
+
+void Game::kill() {
+    UnloadTexture(coinTexture);
 }

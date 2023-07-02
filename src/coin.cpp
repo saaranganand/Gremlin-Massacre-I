@@ -1,65 +1,19 @@
-#include <../include/actor.h>
+#include<../include/raylib.h>
+#include <../include/coin.h>
 
-#include <algorithm>
-#include <vector>
-#include <stdio.h>
+Coin::Coin(Vector2 pos, Vector2 vel) {
+    position = pos;
+    velo = {vel.x * 200.f, vel.y * 200.f};
 
-Actor::Actor(float x, float y, float w, float h) {
-    position = { x, y };
-
-    hurtbox = Collider(position, 0.f, 0.f, w, h);
-
-    alive = true;
-    maxHealth = 3;
-    health = maxHealth;
-
-    CH_velocity = ZERO;
-
-    groundAcceleration = 1800.f;
-    groundMaxVelocity = 500.f;
-
-    airAcceleration = 1500.f;
-    airMaxVelocity = 350.f;
-
-    xDeacceleration = 4000.f;
-
-    jumpVelocity = -700.f;
+    col = Collider(pos, 0, 0, 20, 20);
     grounded = false;
-
-    KB_velocity = ZERO;
-    exploded = false;
-
-    value = 10;
+    grav = 1500.f;
 }
 
-void Actor::createAnimation(std::string dir, std::string tag, int frames, Vector2 source, Vector2 dest, bool loop, Vector2 offset, float flipOffset, int fps) {
-    std::string startDir = "assets/";
-    std::string extension = ".png";
-    
-    Texture tex = loadTextureUnloadImage(startDir + dir + tag + extension);
-    Animation anim = Animation(frames, source.x, source.y, dest.x, dest.y, loop, flipOffset, offset.x, offset.y, fps);
-    
-    anim.sheet = tex;
-    anims.animations[tag] = anim;
-}
 
-void Actor::deaccelerateKnockback(float dt) {
-    deaccelerateToZero(KB_velocity.x, KNOCKBACK_DEACCELERATION, dt);
-    deaccelerateToZero(KB_velocity.y, KNOCKBACK_DEACCELERATION, dt);
-}
-
-void Actor::applyGravity(float dt) {
-    // Pick the minimum between (velocity + acceleration) or max velocity.
-    CH_velocity.y = std::min(CH_velocity.y + GRAVITY_ACCELERATION * dt, MAX_GRAVITY_VELOCITY);
-}
-
-void Actor::checkIfNotGrounded(float dt) {
-    if (abs(CH_velocity.y) > NOT_GROUNDED_THRESHOLD * dt) grounded = false;
-}
-
-void Actor::collideWithVerticalStaticStage(Map map, float dt) {
+void Coin::collideWithVerticalStaticStage(Map map, float dt) {
     // We start from the moving edge (top or bottom).
-    float velocity = (CH_velocity.y + KB_velocity.y) * dt;
+    float velocity = velo.y * dt;
     int direction = sign(velocity);
 
     float movingEdge = bottom();
@@ -119,38 +73,17 @@ void Actor::collideWithVerticalStaticStage(Map map, float dt) {
     }
 
     // Reset movement velocity and check if actor is grounded.
-    CH_velocity.y = 0.f;
+    velo.y *= -0.98;
     if (direction > 0) grounded = true;
-
-    // Knockback should bounce actor off the wall.
-    KB_velocity.y *= -1;
 
     // Move to where the collision occured, with a small collision edge offset.
     position.y += (closest - movingEdge) - COLLISION_EDGE * direction;
     return;
 }
 
-void Actor::handleInput(int input, float dt) {
-    // Deaccelerate if not moving.
-    
-    if (input == 0) deaccelerateToZero(CH_velocity.x, xDeacceleration, dt);
-    else {
-        // Stop movement if we switch directions.
-        if (input != sign(CH_velocity.x)) CH_velocity.x = 0.f;
-
-        // Apply acceleration based on whether actor is grounded.
-        if (grounded) CH_velocity.x += groundAcceleration * input * dt;
-        else CH_velocity.x += airAcceleration * input * dt;
-    }
-
-    // Clamp movement velocity based on whether actor is grounded.
-    if (grounded) clamp(CH_velocity.x, -groundMaxVelocity, groundMaxVelocity);
-    else clamp(CH_velocity.x, -airMaxVelocity, airMaxVelocity);
-}
-
-void Actor::collideWithHorizontalStaticStage(Map map, float dt) {
+void Coin::collideWithHorizontalStaticStage(Map map, float dt) {
     // We start from the moving edge (left or right).
-    float velocity = (CH_velocity.x + KB_velocity.x) * dt;
+    float velocity = velo.x * dt;
     int direction = sign(velocity);
     
     float movingEdge = right();
@@ -209,11 +142,7 @@ void Actor::collideWithHorizontalStaticStage(Map map, float dt) {
         return;
     }
 
-    // Reset movement velocity.
-    CH_velocity.x = 0.f;
-
-    // Knockback should bounce actor off the wall.
-    KB_velocity.x *= -1;
+    velo.x *= -0.98;
 
     // Move to where the collision occured, with a small collision edge offset.
     position.x += (closest - movingEdge) - COLLISION_EDGE * direction;
@@ -221,58 +150,37 @@ void Actor::collideWithHorizontalStaticStage(Map map, float dt) {
     return;
 }
 
-void Actor::takeDamage(int damage, float knockback, Vector2 KB_dir) {
-    health -= damage;
-    if (health <= 0) {
-        explode();
-        health = 0;
-        KB_velocity.x = 1300.f * KB_dir.x;
-        KB_velocity.y = 1300.f * KB_dir.y;
-    } else {
-        KB_velocity.x = knockback * KB_dir.x;
-        KB_velocity.y = knockback * KB_dir.y;
-    }
-}
+bool Coin::update(Player& player, Map map, float dt) {
+    velo.y += grav * dt;
 
-bool Actor::hitStage(Map map, Collider box, TileType tType) {
-    Vector2 pos = {box.parentPosition.x + box.offset.x,box.parentPosition.y + box.offset.y};
-    // Loop through all cells that player currently lies in.
-    int leftColumn = pos.x / map.tileSize;
-    int rightCloumn = (pos.x + box.size.x) / map.tileSize;
+    collideWithVerticalStaticStage(map, dt);
+    collideWithHorizontalStaticStage(map, dt);
 
-    int topRow = pos.y / map.tileSize;
-    int bottomRow = (pos.y + box.size.y) / map.tileSize;
+    col.update(position);
 
-    for (int x = leftColumn; x <= rightCloumn; x++) {
-        for (int y = topRow; y <= bottomRow; y++) {
-            if (map.getTile(x, y)->type == tType) {
-                return true;
-            }
-        }
+    if (col.collides(player.hurtbox)) {
+        player.coins++;
+        return true;
     }
     return false;
 }
 
-void Actor::end() {
-    alive = false;
+void Coin::draw(Texture2D tex) {
+    DrawTexturePro(tex, {0, 0, 20, 20}, {position.x, position.y, 20, 20}, ZERO, 0.f, WHITE);
 }
 
-void Actor::explode() {
-    exploded = true;
-}
-
-float Actor::left() {
+float Coin::left() {
     return position.x;
 }
 
-float Actor::right() {
-    return position.x + hurtbox.size.x;
+float Coin::right() {
+    return position.x + col.size.x;
 }
 
-float Actor::top() {
+float Coin::top() {
     return position.y;
 }
 
-float Actor::bottom() {
-    return position.y + hurtbox.size.y;
+float Coin::bottom() {
+    return position.y + col.size.y;
 }

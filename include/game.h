@@ -7,6 +7,8 @@
 #include <ui.h>
 #include <map.h>
 #include <camera.h>
+#include <coin.h>
+#include <vector>
 
 struct Game {
     bool close;
@@ -18,6 +20,9 @@ struct Game {
     Map map;
     Camera2D camera;
 
+    Texture2D coinTexture;
+    std::vector<Coin> coins;
+
     float dt;
 
     bool debugging;
@@ -28,6 +33,8 @@ struct Game {
     void draw();
     void drawGrid();
     void drawCameraCrosshair();
+
+    void kill();
 };
 
 #endif

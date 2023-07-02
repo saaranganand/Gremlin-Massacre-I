@@ -43,8 +43,11 @@ struct Actor {
 
     float jumpVelocity;
     bool grounded;
+    bool exploded;
 
     Vector2 KB_velocity;
+
+    int value;
 
     Actor(float x = 0.f, float y = 0.f, float w = 0.f, float h = 0.f);
 
@@ -64,7 +67,8 @@ struct Actor {
 
     bool hitStage(Map map, Collider box, TileType tType);
 
-    void kill();
+    void end();
+    void explode();
 
     float left();
     float right();

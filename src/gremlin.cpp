@@ -39,7 +39,7 @@ Gremlin::Gremlin(float x, float y) : Actor(x, y, 30, 50) {
     scaredTimer = Timer(4.f);
     scaredRunTimer = Timer(1.f);
 
-    invincibilityTimer = Timer(2.f);
+    invincibilityTimer = Timer(.5f);
 
     maxHealth = 3;
     health = 3;
@@ -52,18 +52,9 @@ void Gremlin::gremlinJump() {
     }
 }
 
-void Gremlin::update(Map map, Player& player, float dt) {
-    if (!alive) {
-        deaccelerateKnockback(dt);
-        applyGravity(dt);
-        checkIfNotGrounded(dt);
+void Gremlin::update(Map map, Player& player, std::vector<Coin>& coins, float dt) {
+    if (exploded) return;
 
-        collideWithVerticalStaticStage(map, dt);
-        hurtbox.parentPosition.y = position.y;
-        collideWithHorizontalStaticStage(map, dt);
-        hurtbox.parentPosition.x = position.x;
-        return;
-    }
     deaccelerateKnockback(dt);
     applyGravity(dt);
     checkIfNotGrounded(dt);
@@ -142,12 +133,14 @@ void Gremlin::update(Map map, Player& player, float dt) {
 
         if (right() < player.left()) dirX = -1;
         if (top() > player.bottom()) dirY = 1;
-        
-        takeDamage(1, 0.f, {dirX,dirY});
-        invincibilityTimer.start();
 
         player.KB_velocity.x = -1000.f;
         if (player.atks.flipX) player.KB_velocity.x = 1000.f;
+        
+        takeDamage(1, 0.f, {dirX,dirY}, coins);
+        invincibilityTimer.start();
+
+        
     }
 
     if (atks.active && atks.current != NULL) anims.current = &anims.animations[atks.current->anim.c_str()];
@@ -163,7 +156,33 @@ void Gremlin::update(Map map, Player& player, float dt) {
 
 }
 
+void Gremlin::explode(std::vector<Coin>& coins) {
+    exploded = true;
+
+    for (int i = 0; i < value; i++) {
+        Vector2 pos = position;
+        Vector2 vel = {(rand() % 10) - 5.f, (rand() % 10) - 5.f};
+        Coin c = Coin(pos, vel);
+        
+        coins.push_back(c);
+    }
+}
+
+void Gremlin::takeDamage(int damage, float knockback, Vector2 KB_dir, std::vector<Coin>& coins) {
+    health -= damage;
+    if (health <= 0) {
+        explode(coins);
+        health = 0;
+        KB_velocity.x = 1300.f * KB_dir.x;
+        KB_velocity.y = 1300.f * KB_dir.y;
+    } else {
+        KB_velocity.x = knockback * KB_dir.x;
+        KB_velocity.y = knockback * KB_dir.y;
+    }
+}
+
 void Gremlin::draw(bool debugging, float dt) {
+    if (exploded) return;
     if (debugging) {
         hurtbox.draw();
         atks.current->hitbox.draw();

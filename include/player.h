@@ -15,7 +15,7 @@
 #define LATE_JUMP_TIME .1f
 
 
-struct Player: Actor {    
+struct Player: Actor {
     Timer earlyJumpTimer;
     Timer lateJumpTimer;
 
@@ -27,18 +27,15 @@ struct Player: Actor {
     
     Timer invincibilityTimer;
 
+    int coins;
+
     void loadAnimationsAtacks();
 
     Player(float x = 0.f, float y = 0.f);
 
-    bool isSwingKnockback(Map map);
-    bool isPogoKnockback(Map map);
-
     void handleJump(KeyboardKey jumpKey, float dt);
 
     bool handleMapDamage(Map map);
-
-    void collideWithStage(Map map);
 
     void update(Map map, UI ui, float dt);
     void draw(bool debugging, float dt);

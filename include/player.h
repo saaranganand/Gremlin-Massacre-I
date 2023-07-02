@@ -31,7 +31,14 @@ struct Player: Actor {
     int estus;
     int maxEstus;
 
+    Sound hurt;
+    Sound attack;
+    Sound hitWall;
+    Sound walk;
+
     void loadAnimationsAtacks();
+
+    void takeDamage(int damage, float knockback, Vector2 KB_dir);
 
     Player(float x = 0.f, float y = 0.f);
 

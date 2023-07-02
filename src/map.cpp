@@ -72,11 +72,15 @@ void Map::createTiles() {
 
     Tile air = Tile(NONE);
     air.source = {x, 0.f, 32.f, 32.f};
+    Tile transition = Tile(TRANSITION);
+    transition.source = {x, 0.f, 32.f, 32.f}; 
 
+    Tile shop = Tile(SHOP);
+    shop.source = {x, 0.f, 32.f, 32.f}; 
     Tile bonfire = Tile(BONFIRE);
     bonfire.source = {x, 0.f, 32.f, 32.f}; 
     x+=32;
-
+    
     tiles[1] = wall1;
     tiles[2] = wall2;
     tiles[3] = wall3;
@@ -90,7 +94,8 @@ void Map::createTiles() {
     tiles[10] = air;
     tiles[11] = bonfire;
     tiles[12] = air;
-    tiles[13] = air;
+    tiles[13] = shop;
+    tiles[15] = transition;
 }
 
 Map::Map() {

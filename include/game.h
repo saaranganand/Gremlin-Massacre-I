@@ -34,6 +34,7 @@ struct Game {
 
     void update();
     void draw();
+    void youDiedDraw();
     void drawGrid();
     void drawCameraCrosshair();
 

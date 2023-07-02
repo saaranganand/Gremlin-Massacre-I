@@ -48,6 +48,11 @@ Player::Player(float x, float y) : Actor(x, y, 40, 80) {
 
     maxEstus = 0;
     estus = 0;
+
+    hurt = LoadSound("assets/player/hurt.wav");
+    attack = LoadSound("assets/player/attack.wav");
+    hitWall = LoadSound("assets/player/hitWall.wav");
+    walk = LoadSound("assets/player/walk.wav");
 }
 
 void Player::handleJump(KeyboardKey jumpKey, float dt) {
@@ -98,6 +103,19 @@ bool Player::handleMapDamage(Map map) {
     return false;
 }
 
+void Player::takeDamage(int damage, float knockback, Vector2 KB_dir) {
+    PlaySound(hurt);
+    health -= damage;
+    if (health <= 0) {
+        health = 0;
+        KB_velocity.x = 1300.f * KB_dir.x;
+        KB_velocity.y = 1300.f * KB_dir.y;
+    } else {
+        KB_velocity.x = knockback * KB_dir.x;
+        KB_velocity.y = knockback * KB_dir.y;
+    }
+}
+
 bool Player::checkBonfire(Map map) {
     // Loop through all cells that player currently lies in.
     int leftColumn = left() / map.tileSize;
@@ -134,6 +152,8 @@ void Player::update(Map map, UI ui, float dt) {
     if (IsKeyDown(ui.right)) input++;
     handleInput(input, dt);
 
+    if (input != 0) PlaySound(walk);
+
     collideWithHorizontalStaticStage(map, dt);
 
     hurtbox.parentPosition.x = position.x;
@@ -151,6 +171,7 @@ void Player::update(Map map, UI ui, float dt) {
     if (IsKeyPressed(ui.action)) {
         if (IsKeyDown(ui.down) && !grounded) atks.play("pogo");
         else atks.play("neutral");
+        PlaySound(attack);
     }
     atks.update(position.x, position.y, dt);
 
@@ -158,6 +179,7 @@ void Player::update(Map map, UI ui, float dt) {
         if (hitStage(map, atks.current->hitbox, STATIC)) {
             KB_velocity.x = -1000.f;
             if (atks.flipX) KB_velocity.x = 1000.f;
+            PlaySound(hitWall);
         }
     }
 
@@ -226,4 +248,8 @@ void Player::drawHP() {
 
 void Player::kill() {
     anims.kill();
+    UnloadSound(hurt);
+    UnloadSound(attack);
+    UnloadSound(hitWall);
+    UnloadSound(walk);
 }

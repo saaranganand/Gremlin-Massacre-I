@@ -73,7 +73,7 @@ void Coin::collideWithVerticalStaticStage(Map map, float dt) {
     }
 
     // Reset movement velocity and check if actor is grounded.
-    velo.y *= -0.94;
+    velo.y *= -0.85;
     if (direction > 0) grounded = true;
 
     // Move to where the collision occured, with a small collision edge offset.
@@ -142,7 +142,7 @@ void Coin::collideWithHorizontalStaticStage(Map map, float dt) {
         return;
     }
 
-    velo.x *= -0.94;
+    velo.x *= -0.85;
 
     // Move to where the collision occured, with a small collision edge offset.
     position.x += (closest - movingEdge) - COLLISION_EDGE * direction;

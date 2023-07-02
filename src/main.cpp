@@ -9,6 +9,9 @@ int SCREEN_H = 800;
 int main() {
     SetConfigFlags(FLAG_VSYNC_HINT);
     InitWindow(SCREEN_W, SCREEN_H, "template");
+
+    InitAudioDevice();
+    SetMasterVolume(0.5f);
     
     Game game = Game();
 
@@ -25,6 +28,9 @@ int main() {
                 game.update();
                 game.draw();
                 break;
+            case YOUDIED:
+                game.youDiedDraw();
+                break;
             
             case OPTIONS:
                 game.state = game.ui.optioning(game.camera.zoom, game.dt);
@@ -40,6 +46,7 @@ int main() {
     game.player.kill();
     game.gremlin.kill();
     game.kill();
+    CloseAudioDevice();
     CloseWindow();
     return 0;
 }

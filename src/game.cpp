@@ -32,6 +32,10 @@ Game::Game() {
 
 void Game::update() {
     player.update(map, ui, dt);
+    if (player.health <= 0) {
+        state = YOUDIED;
+        return;
+    }
     gremlin.update(map, player, coins, dt);
 
     updateCameraToMap(camera, player, map);
@@ -77,6 +81,44 @@ void Game::draw() {
     //if (debugging) drawCameraCrosshair();
 
     EndDrawing();
+}
+
+void Game::youDiedDraw() {
+    BeginDrawing();
+
+    ClearBackground(BLACK);
+
+    DrawTexturePro(backTex, {0, 0, 1920, 1080}, {0, -100, 1920, 1080}, ZERO, 0.f, WHITE);
+
+    BeginMode2D(camera);
+
+    map.draw(camera);
+
+    //if (debugging) drawGrid();
+
+    player.draw(debugging, dt);
+    gremlin.draw(debugging, dt);
+
+    for (Coin c : coins) {
+        c.draw(coinTexture);
+    }
+
+    EndMode2D();
+
+    player.drawHP();
+    DrawTexturePro(coinTexture, {0, 0, 46, 52}, { 20, 65, 50, 60}, ZERO, 0.f, WHITE);
+    DrawTexturePro(estusTex, {0, 0, 34, 34}, { 5, 120, 80, 80}, ZERO, 0.f, WHITE);
+
+        Color col = BLACK;
+    col.a = 125;
+
+    float hei = 400;
+
+    DrawRectangle(0, (SCREEN_H - hei) / 2.f, SCREEN_W, hei, col);
+    DrawText("YOU DIED", (SCREEN_W - MeasureText("YOU DIED", 200)) / 2.f, (SCREEN_H - hei) / 2.f + 100, 200, RED);
+
+    EndDrawing();
+
 }
 
 void Game::drawGrid() {

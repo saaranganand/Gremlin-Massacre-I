@@ -22,6 +22,11 @@ struct Gremlin : Actor {
 
     Timer invincibilityTimer;
 
+    Sound action;
+    Sound hurt;
+    Sound explosion;
+    Sound walk;
+
     Gremlin(float x = 0.f, float y = 0.f);
 
     void gremlinJump();

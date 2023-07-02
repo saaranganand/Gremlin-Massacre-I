@@ -16,7 +16,8 @@ void Player::loadAnimationsAtacks() {
     createAnimation("player/", "run", 4, {32,32}, dest, true, offset, fxOff);
     createAnimation("player/", "fall", 1, {32,32}, dest, false, offset, fxOff);
     createAnimation("player/", "neutral", 5, {32,32}, dest, false, offset, fxOff);
-    createAnimation("player/", "pogo", 5, {32,32}, dest, false, offset, fxOff);
+    dest.y *= 2;
+    createAnimation("player/", "pogo", 5, {32,64}, dest, false, offset, fxOff);
 
     anims.setAnim("idle");
 

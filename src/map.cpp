@@ -104,7 +104,7 @@ Map::Map() {
     width = 0;
     height = 0;
 
-    tileSize = 80;
+    tileSize = 40;
     startTile = { 0, 0 };
 
     tileSheet = loadTextureUnloadImage("assets/tileSheet.png");

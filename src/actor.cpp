@@ -23,7 +23,7 @@ Actor::Actor(float x, float y, float w, float h) {
 
     xDeacceleration = 4000.f;
 
-    jumpVelocity = -700.f;
+    jumpVelocity = -650.f;
     grounded = false;
 
     KB_velocity = ZERO;

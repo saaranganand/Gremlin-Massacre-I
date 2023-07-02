@@ -75,6 +75,10 @@ void Actor::collideWithVerticalStaticStage(Map map, float dt) {
     // We only need to look for vertical collisions along the columns that the player resides in.
     int leftEdge = left() / map.tileSize;
     int rightEdge = right() / map.tileSize;
+
+    clamp(leftEdge, 0, map.width - 1);
+    clamp(rightEdge, 0, map.width - 1);
+
     for (; leftEdge <= rightEdge; leftEdge++) {
 
         // We look along the path of the actor for any static objects.
@@ -145,7 +149,7 @@ void Actor::collideWithHorizontalStaticStage(Map map, float dt) {
     // We start from the moving edge (left or right).
     float velocity = (CH_velocity.x + KB_velocity.x) * dt;
     int direction = sign(velocity);
-
+    
     float movingEdge = right();
     if (direction == -1) movingEdge = left();
 
@@ -156,12 +160,16 @@ void Actor::collideWithHorizontalStaticStage(Map map, float dt) {
     // Clamp map searching to bounds of the array
     clamp(start, 0, map.width - 1);
     clamp(limit, 0, map.width - 1);
-
+    
     std::vector<float> collisions;
 
     // We only need to look for vertical collisions along the rows that the player resides in.
     int topEdge = top() / map.tileSize;
     int BottomEdge = bottom() / map.tileSize;
+
+    clamp(topEdge, 0, map.height - 1);
+    clamp(BottomEdge, 0, map.height - 1);
+
     for (; topEdge <= BottomEdge; topEdge++) {
 
         // We look along the path of the actor for any static objects.
@@ -211,7 +219,6 @@ void Actor::collideWithHorizontalStaticStage(Map map, float dt) {
 }
 
 void Actor::takeDamage(int damage, float knockback, Vector2 KB_dir) {
-    printf("dmg = %d", damage);
     health -= damage;
     if (health < 0) {
         // handle

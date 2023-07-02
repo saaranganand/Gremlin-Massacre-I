@@ -4,28 +4,15 @@
 Gremlin::Gremlin(float x, float y) : Actor(x, y, 30, 50) {
     anims = AnimationHandler();
 
-    float sourceWidth = 30.f * 2;
-    float sourceHeight = 50.f * 2;
+    Vector2 dest = {100,100};
+    Vector2 offset = {0,-27};
+    float fxOff = -78.f;
 
-    Texture idle = loadTextureUnloadImage("assets/player/idle.png");
-    Animation _idle = Animation(1, 30.f, 50.f, sourceWidth, sourceHeight, false, -25.f, -5.f, -45.f);
-    _idle.sheet = idle;
-    anims.animations["idle"] = _idle;
-
-    Texture run = loadTextureUnloadImage("assets/player/run.png");
-    Animation _run = Animation(10, 30.f, 50.f, sourceWidth, sourceHeight, true, -25.f, -5.f, -45.f, 20);
-    _run.sheet = run;
-    anims.animations["run"] = _run;
-
-    Texture jump = loadTextureUnloadImage("assets/player/midair.png");
-    Animation _jump = Animation(1, 30.f, 50.f, sourceWidth, sourceHeight, false, -25.f, -5.f, -45.f);
-    _jump.sheet = jump;
-    anims.animations["jump"] = _jump;
-
-    Texture neutral = loadTextureUnloadImage("assets/player/attack.png");
-    Animation _neutral = Animation(4, 66.f, 43.f, 66.f * 2.5f, 43.f * 2.5f, false, -110.f, -5.f, -27.f, 10);
-    _neutral.sheet = neutral;
-    anims.animations["neutral"] = _neutral;
+    createAnimation("player/", "idle", 1, {32,32}, dest, false, offset, fxOff);
+    createAnimation("player/", "run", 4, {32,32}, dest, true, offset, fxOff);
+    createAnimation("player/", "fall", 1, {32,32}, dest, false, offset, fxOff);
+    createAnimation("player/", "neutral", 5, {32,32}, dest, false, offset, fxOff);
+    createAnimation("player/", "pogo", 5, {32,32}, dest, false, offset, fxOff);
 
     anims.setAnim("idle");
 
@@ -100,8 +87,6 @@ void Gremlin::update(Map map, Player player, float dt) {
         else if (state == RUNLEFT && sign(position.x - player.position.x) == 1) state = RUNRIGHT;
     }
 
-    
-
     int input = 0;
     if (state == RUNLEFT) input = -1;
     else if (state == RUNRIGHT) input = 1;
@@ -134,8 +119,20 @@ void Gremlin::update(Map map, Player player, float dt) {
         }
     }
 
+    invincibilityTimer.update(dt);
+    if (player.atks.active && !invincibilityTimer.active) if (hurtbox.collides(player.atks.current->hitbox)) {
+        float dirX = 1;
+        float dirY = -1;
+
+        if (right() < player.left()) dirX = -1;
+        if (top() > player.bottom()) dirY = 1;
+        
+        takeDamage(1, 2500.f, {dirX,dirY});
+        invincibilityTimer.start();
+    }
+
     if (atks.active && atks.current != NULL) anims.current = &anims.animations[atks.current->anim.c_str()];
-    else if (CH_velocity.y != 0.f || !grounded) anims.current = &anims.animations["jump"];
+    else if (CH_velocity.y != 0.f || !grounded) anims.current = &anims.animations["fall"];
     else if (CH_velocity.x != 0.f) anims.current = &anims.animations["run"];
     else anims.current = &anims.animations["idle"];
 
@@ -153,7 +150,10 @@ void Gremlin::draw(bool debugging, float dt) {
         atks.current->hitbox.draw();
     }
 
-    anims.draw(position.x, position.y, WHITE);
+    Color tint = WHITE;
+    if (((int) (invincibilityTimer.elapsed * 10.f) % 2)) tint = DARKGRAY;
+
+    anims.draw(position.x, position.y, tint);
 }
 
 void Gremlin::kill() {

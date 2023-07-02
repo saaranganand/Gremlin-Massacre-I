@@ -13,6 +13,8 @@ struct Collider {
     bool active;
     
     Collider(Vector2 parentPos = ZERO, float x = 0.f, float y = 0.f, int w = 0.f, int h = 0.f);
+    
+    bool collides(Collider box);
     void update(Vector2 parentPos);
     void draw();
 };

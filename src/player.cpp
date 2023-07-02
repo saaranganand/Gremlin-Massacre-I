@@ -6,6 +6,7 @@
 #include <stdio.h>
 
 void Player::loadAnimationsAtacks() {
+    anims = AnimationHandler();
     
     Vector2 dest = {120,120};
     Vector2 offset = {0,-27};
@@ -19,7 +20,7 @@ void Player::loadAnimationsAtacks() {
 
     anims.setAnim("idle");
 
-    Attack neutral("neutral", 100.f, 110.f, hurtbox.size.x, -30.f, -100.f, 0.5f, 0.02f);
+    Attack neutral("neutral", 90.f, 50.f, hurtbox.size.x, 20.f, -100.f, 0.5f, 0.02f);
     Attack pogo("pogo", 90.f, 90.f, -45.f + hurtbox.size.x / 2.f, hurtbox.size.y, -45.f / 2.f, 0.5f, 0.05f);
 
     atks = AttackHandler();
@@ -145,6 +146,10 @@ void Player::update(Map map, UI ui, float dt) {
             anims.flipX = true;
             atks.flipX = true;
         }
+    }
+
+    if (grounded && atks.current == &atks.attacks["pogo"] && atks.active) {
+        atks.active = false;
     }
 
     if (atks.active && atks.current != NULL) anims.current = &anims.animations[atks.current->anim.c_str()];

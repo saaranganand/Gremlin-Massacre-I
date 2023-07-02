@@ -19,6 +19,8 @@ struct Gremlin : Actor {
     Timer scaredTimer;
     Timer scaredRunTimer;
 
+    Timer invincibilityTimer;
+
     Gremlin(float x = 0.f, float y = 0.f);
 
     void gremlinJump();

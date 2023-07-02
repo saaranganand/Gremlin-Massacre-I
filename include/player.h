@@ -11,6 +11,9 @@
 #include <animation.h>
 #include <timer.h>
 #include <attack.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 #define EARLY_JUMP_TIME .1f
 #define LATE_JUMP_TIME .1f
@@ -62,11 +65,15 @@ struct Player: Actor {
 
     bool checkBonfire(Map map);
 
+    void save();
+
     bool checkLadder(Map map);
 
     bool update(Map map, UI ui, float dt);
     void draw(bool debugging, float dt);
     void drawHP();
+
+    bool load();
 
     void kill();
 };

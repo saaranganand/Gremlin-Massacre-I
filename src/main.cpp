@@ -49,6 +49,7 @@ int main() {
                 break;
         }
     }
+    game.player.save();
     game.map.kill();
     game.player.kill();
     game.kill();

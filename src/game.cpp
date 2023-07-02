@@ -2,6 +2,7 @@
 #include <../include/game.h>
 
 #include <stdio.h>
+#include <math.h>
 
 Game::Game() {
     close = false;
@@ -11,11 +12,46 @@ Game::Game() {
     ui = UI();
 
     map = Map();
-    load_tutorial(7, 6);
 
-    player = Player(map.startTile.x * map.tileSize, map.startTile.y * map.tileSize);
-    player.bonfires["tutorial"] = {14, 6, 98, 23};
-    player.currentBonfire = "tutorial";
+    if (!player.load()) {
+        load_tutorial(7, 6);
+
+        player = Player(map.startTile.x * map.tileSize, map.startTile.y * map.tileSize);
+        player.bonfires["tutorial"] = {14, 6, 98, 23};
+        player.currentBonfire = "tutorial";
+        player.maxEstus = 0;
+    } else {
+        levelData d = player.bonfires[player.currentBonfire];
+
+        int coins = player.coins;
+        int estus = player.maxEstus;
+
+        if (player.currentBonfire == "tutorial") {
+            load_tutorial(d.bonfireX, d.bonfireY);
+            player = Player(map.startTile.x * map.tileSize, map.startTile.y * map.tileSize);
+            player.bonfires["tutorial"] = {14, 6, 98, 23};
+            player.currentBonfire = "tutorial";
+        } else if (player.currentBonfire == "room2") {
+            load_2(d.bonfireX, d.bonfireY);
+            player = Player(map.startTile.x * map.tileSize, map.startTile.y * map.tileSize);
+            player.bonfires["room2"] = {16, 25, 91, 90};
+            player.currentBonfire = "room2";
+        } else if (player.currentBonfire == "room3") {
+            load_3(d.bonfireX, d.bonfireY);
+            player = Player(map.startTile.x * map.tileSize, map.startTile.y * map.tileSize);
+            player.bonfires["room3"] = {36, 124, 200, 155};
+            player.currentBonfire = "room3";
+        } else if (player.currentBonfire == "room5") {
+            load_5(d.bonfireX, d.bonfireY);
+            player = Player(map.startTile.x * map.tileSize, map.startTile.y * map.tileSize);
+            player.bonfires["room5"] = {34, 68, 68, 80};
+            player.currentBonfire = "room5";
+        }
+
+        player.coins = coins;
+        player.maxEstus = estus;
+    }
+    
 
     camera.target = player.position;
     camera.offset = { SCREEN_W /2.f, SCREEN_H / 2.f };
@@ -106,13 +142,14 @@ void Game::draw() {
 }
 
 void Game::shoppingUpdate() {
+    estusCost = 5 * pow(3, player.maxEstus);
     if (IsKeyPressed(ui.back)) state = PLAY;
     if (IsKeyPressed(ui.accept)) {
         if (player.coins >= estusCost) {
             player.maxEstus++;
             player.estus++;
             player.coins -= estusCost;
-            estusCost *= 3;
+            
         }
     }
 }
@@ -153,7 +190,8 @@ void Game::shoppingDraw() {
     DrawText("Press X to exit", player.position.x - 400, player.position.y - 290, 20, WHITE);
     DrawText(TextFormat("Press Z to buy an estus flask for: %d coins", estusCost), player.position.x - 400, player.position.y - 245, 20, WHITE);
     DrawText("You can use an estus to heal yourself with c", player.position.x - 400, player.position.y - 200, 20, WHITE);
-    DrawText("Peak your profits as much as you can, in hopes you pass the exam! hehe", player.position.x - 400, player.position.y - 160, 20, WHITE);
+    DrawText("Peak your profits as much as you can, ", player.position.x - 400, player.position.y - 160, 20, WHITE);
+    DrawText("in hopes you pass the exam! hehe", player.position.x - 400, player.position.y - 120, 20, WHITE);
 
     EndMode2D();
 

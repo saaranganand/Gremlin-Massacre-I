@@ -63,7 +63,7 @@ Player::Player(float x, float y) : Actor(x, y, 40, 80) {
     coins = 0;
 
     maxEstus = 0;
-    estus = 0;
+    estus = maxEstus;
 
     hurt = LoadSound("assets/player/hurt.wav");
     attack = LoadSound("assets/player/attack.wav");
@@ -238,6 +238,8 @@ bool Player::update(Map map, UI ui, float dt) {
         if (checkBonfire(map)) {
             health = maxHealth;
             estus = maxEstus;
+
+            save();
         }
     }   
     if (IsKeyPressed(ui.action)) {
@@ -276,7 +278,7 @@ bool Player::update(Map map, UI ui, float dt) {
     if (IsKeyPressed(ui.heal)) {
         if (checkShop(map)) {
             return true;
-        } else if (estus > 0) {
+        } else if (estus > 0 && !checkBonfire(map) && health < maxHealth) {
             estus--;
             health++;
         }
@@ -326,4 +328,80 @@ void Player::kill() {
     UnloadSound(attack);
     UnloadSound(hitWall);
     UnloadSound(coin);
+}
+
+bool Player::load() {
+    std::ifstream saveData("player.save");
+    if (!saveData) return false;
+
+    std::string line;
+    getline(saveData, line);
+    maxEstus = stoi(line);
+
+    getline(saveData, line);
+    coins = stoi(line);
+    printf("%d %d\n", coins, stoi(line));
+
+    if (getline(saveData, line)) {
+        if (line != "") {
+            currentBonfire = line;
+        } else return false;
+        
+    } else {
+        return false;
+    }
+    
+
+    while (saveData) {
+        // Read each line of the save data.
+        std::string line;
+        if (!getline(saveData, line)) break;
+
+        std::istringstream dataStream(line);
+        levelData d = { 0, 0, 0, 0};
+        std::string name;
+        int i = 0;
+        while (dataStream) {
+            
+            std::string val;
+
+            
+
+            // Split map data into comma seperated list.
+            if (!getline(dataStream, val, ',')) break;
+            if (i == 0) name = val;
+            if (i == 1) d.bonfireX = stoi(val);
+            if (i == 2) d.bonfireY = stoi(val);
+            if (i == 3) d.width = stoi(val);
+            if (i == 4) d.height = stoi(val);
+            
+            i++;
+        }
+        if (i == 5) {
+
+            bonfires[name] = d;
+
+        }
+    }
+
+    return true;
+}
+
+void Player::save() {
+    std::ofstream Saved("player.save");
+
+    Saved << maxEstus << "\n";
+    Saved << coins << "\n";
+    Saved << currentBonfire << "\n";
+    std::map<std::string, levelData>::iterator it;
+
+    for (it = bonfires.begin(); it != bonfires.end(); it++) {
+        Saved << it->first << ",";
+        Saved << it->second.bonfireX << ",";
+        Saved << it->second.bonfireY << ",";
+        Saved << it->second.width << ",";
+        Saved << it->second.height << "\n";
+    }
+
+    Saved.close();
 }

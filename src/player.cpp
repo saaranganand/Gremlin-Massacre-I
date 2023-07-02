@@ -55,6 +55,8 @@ Player::Player(float x, float y) : Actor(x, y, 40, 80) {
     spikeKB = 700.f;
     pogoKB = 700.f;
 
+    jumpVelocity = -700.f;
+
     pogoDeAccel = 700.f;
     invincibilityTimer = Timer(2.f);
 
@@ -135,6 +137,30 @@ void Player::takeDamage(int damage, float knockback, Vector2 KB_dir) {
     }
 }
 
+bool Player::checkShop(Map map) {
+    // Loop through all cells that player currently lies in.
+    int leftColumn = left() / map.tileSize;
+    int rightCloumn = right() / map.tileSize;
+
+    int topRow = top() / map.tileSize;
+    int bottomRow = bottom() / map.tileSize;
+
+    clamp(leftColumn, 0, map.width - 1);
+    clamp(rightCloumn, 0, map.width - 1);
+    clamp(topRow, 0, map.height - 1);
+    clamp(bottomRow, 0, map.height - 1);
+
+    for (int x = leftColumn; x <= rightCloumn; x++) {
+        for (int y = topRow; y <= bottomRow; y++) {
+            if (map.getTile(x, y)->type == SHOP) {
+                //play healing sound
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 bool Player::checkBonfire(Map map) {
     // Loop through all cells that player currently lies in.
     int leftColumn = left() / map.tileSize;
@@ -188,7 +214,7 @@ bool Player::checkLadder(Map map) {
     return false;
 }
 
-void Player::update(Map map, UI ui, float dt) {
+bool Player::update(Map map, UI ui, float dt) {
     deaccelerateKnockback(dt);
     applyGravity(dt);
     checkIfNotGrounded(dt);
@@ -209,7 +235,10 @@ void Player::update(Map map, UI ui, float dt) {
     // Take damage
     // Handle death
     if (IsKeyPressed(ui.heal)) {
-        checkBonfire(map);
+        if (checkBonfire(map)) {
+            health = maxHealth;
+            estus = maxEstus;
+        }
     }   
     if (IsKeyPressed(ui.action)) {
         if (IsKeyDown(ui.down) && !grounded) atks.play("pogo");
@@ -244,10 +273,13 @@ void Player::update(Map map, UI ui, float dt) {
     if (grounded && atks.current == &atks.attacks["pogo"] && atks.active) {
         atks.active = false;
     }
-
-    if (IsKeyPressed(ui.heal) && estus > 0) {
-        estus--;
-        health++;
+    if (IsKeyPressed(ui.heal)) {
+        if (checkShop(map)) {
+            return true;
+        } else if (estus > 0) {
+            estus--;
+            health++;
+        }
     }
     
     
@@ -256,6 +288,7 @@ void Player::update(Map map, UI ui, float dt) {
     else if (CH_velocity.x != 0.f) anims.current = &anims.animations["run"];
     else anims.current = &anims.animations["idle"];
     anims.update(dt);
+    return false;
 }
 
 void Player::draw(bool debugging, float dt) {

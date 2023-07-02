@@ -68,8 +68,8 @@ void Golden::update(Map map, Player& player, std::vector<Coin>& coins, float dt)
 
     int input = 0;
 
-    if (position.x > player.position.x) input = -1;
-    else input = 1;
+    if (position.x > player.position.x) input = 1;
+    else input = -1;
 
 
     handleInput(input, dt);

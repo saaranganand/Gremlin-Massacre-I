@@ -23,6 +23,7 @@ Game::Game() {
     camera.zoom = 1.5f;
 
     dt = 0.016667f;
+    estusCost = 5;
 
     debugging = true;
 
@@ -36,7 +37,9 @@ Game::Game() {
 }
 
 void Game::update() {
-    player.update(map, ui, dt);
+    if (player.update(map, ui, dt)) {
+        state = SHOPPING;
+    }
     if (player.health <= 0) {
         state = YOUDIED;
         return;
@@ -47,7 +50,7 @@ void Game::update() {
     for (Frog& a : frogs) {
         a.update(map, player, coins, dt);
     }
-    for (Golden a : goldens) {
+    for (Golden& a : goldens) {
         a.update(map, player, coins, dt);
     }
     updateCameraToMap(camera, player, map);
@@ -77,17 +80,17 @@ void Game::draw() {
     //if (debugging) drawGrid();
 
     player.draw(debugging, dt);
-    for (Gremlin a : gremlins) {
+    for (Gremlin& a : gremlins) {
         a.draw(debugging, dt);
     }
-    for (Frog a : frogs) {
+    for (Frog& a : frogs) {
         a.draw(debugging, dt);
     }
-    for (Golden a : goldens) {
+    for (Golden& a : goldens) {
         a.draw(debugging, dt);
     }
 
-    for (Coin c : coins) {
+    for (Coin& c : coins) {
         c.draw(coinTexture);
     }
 
@@ -98,6 +101,65 @@ void Game::draw() {
     DrawTexturePro(estusTex, {0, 0, 34, 34}, { 5, 120, 80, 80}, ZERO, 0.f, WHITE);
 
     //if (debugging) drawCameraCrosshair();
+
+    EndDrawing();
+}
+
+void Game::shoppingUpdate() {
+    if (IsKeyPressed(ui.back)) state = PLAY;
+    if (IsKeyPressed(ui.accept)) {
+        if (player.coins >= estusCost) {
+            player.maxEstus++;
+            player.estus++;
+            player.coins -= estusCost;
+            estusCost *= 3;
+        }
+    }
+}
+
+void Game::shoppingDraw() {
+    BeginDrawing();
+
+    ClearBackground(BLACK);
+
+    DrawTexturePro(backTex, {0, 0, 1920, 1080}, {0, -100, 1920, 1080}, ZERO, 0.f, WHITE);
+
+    BeginMode2D(camera);
+
+    map.draw(camera);
+
+    //if (debugging) drawGrid();
+
+    player.draw(debugging, dt);
+    
+    for (Gremlin& a : gremlins) {
+        a.draw(debugging, dt);
+    }
+    for (Frog& a : frogs) {
+        a.draw(debugging, dt);
+    }
+
+
+    for (Golden& a : goldens) {
+        a.draw(debugging, dt);
+    }
+
+    for (Coin& c : coins) {
+        c.draw(coinTexture);
+    }
+
+
+    DrawRectangle(player.position.x - 400, player.position.y - 300, 500 + player.hurtbox.size.x, 250, DARKBLUE);
+    DrawText("Press X to exit", player.position.x - 400, player.position.y - 290, 20, WHITE);
+    DrawText(TextFormat("Press Z to buy an estus flask for: %d coins", estusCost), player.position.x - 400, player.position.y - 245, 20, WHITE);
+    DrawText("You can use an estus to heal yourself with c", player.position.x - 400, player.position.y - 200, 20, WHITE);
+    DrawText("Peak your profits as much as you can, in hopes you pass the exam! hehe", player.position.x - 400, player.position.y - 160, 20, WHITE);
+
+    EndMode2D();
+
+    player.drawHP();
+    DrawTexturePro(coinTexture, {0, 0, 46, 52}, { 20, 65, 50, 60}, ZERO, 0.f, WHITE);
+    DrawTexturePro(estusTex, {0, 0, 34, 34}, { 5, 120, 80, 80}, ZERO, 0.f, WHITE);
 
     EndDrawing();
 }
@@ -152,15 +214,19 @@ void Game::youDiedDraw() {
 
     player.draw(debugging, dt);
     
-    for (Gremlin a : gremlins) {
+    for (Gremlin& a : gremlins) {
+        a.draw(debugging, dt);
+    }
+    for (Frog& a : frogs) {
         a.draw(debugging, dt);
     }
 
-    for (Golden a : goldens) {
+
+    for (Golden& a : goldens) {
         a.draw(debugging, dt);
     }
 
-    for (Coin c : coins) {
+    for (Coin& c : coins) {
         c.draw(coinTexture);
     }
 
@@ -310,13 +376,13 @@ void Game::transitionStage() {
 }
 
 void Game::emptyEntites() {
-    for (Gremlin a : gremlins) {
+    for (Gremlin& a : gremlins) {
         a.kill();
     }
-    for (Frog a : frogs) {
+    for (Frog& a : frogs) {
         a.kill();
     }
-    for (Golden a : goldens) {
+    for (Golden& a : goldens) {
         a.kill();
     }
     gremlins.clear();

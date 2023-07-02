@@ -33,6 +33,11 @@ int main() {
                 game.youDiedUpdate();
                 game.youDiedDraw();
                 break;
+
+            case SHOPPING:
+                game.shoppingUpdate();
+                game.shoppingDraw();
+                break;
             
             case OPTIONS:
                 game.state = game.ui.optioning(game.camera.zoom, game.dt);

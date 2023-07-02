@@ -58,11 +58,13 @@ struct Player: Actor {
 
     bool handleMapDamage(Map map);
 
+    bool checkShop(Map map);
+
     bool checkBonfire(Map map);
 
     bool checkLadder(Map map);
 
-    void update(Map map, UI ui, float dt);
+    bool update(Map map, UI ui, float dt);
     void draw(bool debugging, float dt);
     void drawHP();
 

@@ -39,6 +39,7 @@ struct Game {
     int youdiedFrames;
 
     float dt;
+    int estusCost;
 
     bool debugging;
 
@@ -49,6 +50,9 @@ struct Game {
 
     void youDiedUpdate();
     void youDiedDraw();
+
+    void shoppingUpdate();
+    void shoppingDraw();
 
     void drawGrid();
     void drawCameraCrosshair();

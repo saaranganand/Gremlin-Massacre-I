@@ -27,7 +27,7 @@ int main() {
             case PLAY:
                 game.update();
                 game.draw();
-                if (game.state == YOUDIED) PlaySound(game.youdied);
+                if (game.state == YOUDIED) PlaySound(game.YOUDEAD);
                 break;
             case YOUDIED:
                 game.youDiedUpdate();
@@ -46,7 +46,6 @@ int main() {
     }
     game.map.kill();
     game.player.kill();
-    game.gremlin.kill();
     game.kill();
     CloseAudioDevice();
     CloseWindow();

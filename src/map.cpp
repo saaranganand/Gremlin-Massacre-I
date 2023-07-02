@@ -228,37 +228,6 @@ void Map::assignMap(std::string mapName, int w, int h, Vector2 sT, Vector2 bC) {
     writeMap(mapName);
 }
 
-void load_tutorial(Map& map, float x, float y) {
-    map.assignMap("levels/tutorial.out", 98, 23, {x, y}, {14, 6});
-    map.mapName = "tutorial";
-}
 
-void load_1(Map& map, float x, float y) {
-    map.assignMap("levels/room1.out", 144, 48, {x, y});
-    map.mapName = "room1";
-}
-
-void load_2(Map& map, float x, float y) {
-    map.assignMap("levels/room2.out", 91, 90, {x, y}, {16, 25});
-    map.mapName = "room2";
-}
-
-void load_3(Map& map, float x, float y) {
-    map.assignMap("levels/room3.out", 200, 155, {x, y}, {36, 124});
-    map.mapName = "room3"; 
-}
-
-void load_4(Map& map, float x, float y) {
-    
-}
-
-void load_5(Map& map, float x, float y) {
-    map.assignMap("levels/room5.out", 68, 80, {x, y}, {34, 68});
-    map.mapName = "room5"; 
-}
-
-void load_6(Map& map, float x, float y) {
-
-}
 
 

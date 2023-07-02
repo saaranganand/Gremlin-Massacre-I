@@ -189,21 +189,16 @@ bool Player::checkLadder(Map map) {
 }
 
 void Player::update(Map map, UI ui, float dt) {
-    
     deaccelerateKnockback(dt);
     applyGravity(dt);
     checkIfNotGrounded(dt);
-    
     handleJump(ui.jump, map, dt);
     collideWithVerticalStaticStage(map, dt);
-
     hurtbox.parentPosition.y = position.y;
-    
     int input = 0;
     if (IsKeyDown(ui.left)) input--;
     if (IsKeyDown(ui.right)) input++;
     handleInput(input, dt);
-
     //if (input != 0) PlaySound(walk);
 
     collideWithHorizontalStaticStage(map, dt);

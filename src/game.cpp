@@ -11,13 +11,11 @@ Game::Game() {
     ui = UI();
 
     map = Map();
-    load_tutorial(map, 9, 6);
+    load_tutorial(7, 6);
 
     player = Player(map.startTile.x * map.tileSize, map.startTile.y * map.tileSize);
     player.bonfires["tutorial"] = {14, 6, 98, 23};
     player.currentBonfire = "tutorial";
-
-    gremlin = Gremlin(68 * map.tileSize, 6 * map.tileSize);
 
     camera.target = player.position;
     camera.offset = { SCREEN_W /2.f, SCREEN_H / 2.f };
@@ -32,7 +30,7 @@ Game::Game() {
     estusTex = loadTextureUnloadImage("assets/estus.png");
     backTex = loadTextureUnloadImage("assets/bgimg.png");
 
-    youdied = LoadSound("assets/youdied.mp3");
+    YOUDEAD = LoadSound("assets/youdied.mp3");
 
     youdiedFrames = 0;
 }
@@ -43,7 +41,9 @@ void Game::update() {
         state = YOUDIED;
         return;
     }
-    gremlin.update(map, player, coins, dt);
+    for (Gremlin& a : gremlins) {
+        a.update(map, player, coins, dt);
+    }
     updateCameraToMap(camera, player, map);
     int i = 0;
     for (Coin& c : coins) {
@@ -71,7 +71,9 @@ void Game::draw() {
     //if (debugging) drawGrid();
 
     player.draw(debugging, dt);
-    gremlin.draw(debugging, dt);
+    for (Gremlin a : gremlins) {
+        a.draw(debugging, dt);
+    }
 
     for (Coin c : coins) {
         c.draw(coinTexture);
@@ -95,9 +97,27 @@ void Game::youDiedUpdate() {
         map.reset();
 
         levelData bonfireData = player.bonfires[player.currentBonfire];
+        
+        float x = bonfireData.bonfireX;
+        float y = bonfireData.bonfireY;
 
-        map.assignMap(path, bonfireData.width, bonfireData.height, {bonfireData.bonfireX, bonfireData.bonfireY}, {bonfireData.bonfireX, bonfireData.bonfireY});
-        map.mapName = player.currentBonfire;
+        map.reset();
+
+        if (player.currentBonfire == "tutorial") {
+            load_tutorial(x, y);
+        } else if (player.currentBonfire == "room1") {
+            load_1(x, y);
+        } else if (player.currentBonfire == "room2") {
+            load_2(x, y);
+        } else if (player.currentBonfire == "room3") {
+            load_3(x, y);
+        } else if (player.currentBonfire == "room4") {
+            load_4(x, y);
+        } else if (player.currentBonfire == "room5") {
+            load_5(x, y);
+        } else if (player.currentBonfire == "room6") {
+            load_6(x, y);
+        }
         player.position = {bonfireData.bonfireX * map.tileSize, bonfireData.bonfireY * map.tileSize};
         state = PLAY;
         player.resetDeath();
@@ -119,7 +139,10 @@ void Game::youDiedDraw() {
     //if (debugging) drawGrid();
 
     player.draw(debugging, dt);
-    gremlin.draw(debugging, dt);
+    
+    for (Gremlin a : gremlins) {
+        a.draw(debugging, dt);
+    }
 
     for (Coin c : coins) {
         c.draw(coinTexture);
@@ -186,78 +209,142 @@ void Game::transitionStage() {
             if (map.getTile(x, y)->type == TRANSITION) {
                 if (map.mapName == "tutorial") {
                     map.reset();
-                    load_1(map, 1, 25);
+                    load_1(1, 25);
                     player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                     
                 }
                 else if (map.mapName == "room1") {
                     if ((player.position.x / map.tileSize) < 3) {
                         map.reset();
-                        load_tutorial(map, 96, 8);
+                        load_tutorial(96, 8);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                     } else {
                         map.reset();
-                        load_2(map, 2, 27);
+                        load_2(2, 27);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                     }
                 }
                 else if (map.mapName == "room2") {
                     if ((player.position.x / map.tileSize) < 3) {
                         map.reset();
-                        load_1(map, 142, 25);
+                        load_1(142, 25);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                     }
                     else if ((player.position.y / map.tileSize) < 3) {
                         map.reset();
-                        load_3(map, 179, 152);
+                        load_3(179, 152);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                         player.CH_velocity.y = -2000.f;
                     }
                     else if ((player.position.y / map.tileSize) > 60) {
                         map.reset();
-                        load_5(map, 1, 52);
+                        load_5(1, 52);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                     } else {
                         map.reset();
-                        load_5(map, 1, 13);
+                        load_5(1, 13);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                     }
                 }
                 else if (map.mapName == "room3") {
                     if ((player.position.y / map.tileSize) < 78) { // top
                         map.reset();
-                        load_4(map, 0, 0);
+                        load_4(0, 0);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                     } else {
                         map.reset();
-                        load_2(map, 27, 2);
+                        load_2(27, 2);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                     }
                 }
                 else if (map.mapName == "room5") {
                     if ((player.position.x / map.tileSize) > 30) {
                         map.reset();
-                        load_6(map, 0, 0);
+                        load_6(0, 0);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                     } else if ((player.position.y / map.tileSize) > 36) {
                         map.reset();
-                        load_2(map, 89, 75);
+                        load_2(89, 75);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                     } else {
                         map.reset();
-                        load_2(map, 89, 52);
+                        load_2(89, 52);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                     }
                 }
+
+                //load entities
                 return;
             }
         }
     }
 }
 
+void Game::emptyEntites() {
+    for (Gremlin a : gremlins) {
+        a.kill();
+    }
+    gremlins.clear();
+}
+
 void Game::kill() {
     UnloadTexture(coinTexture);
     UnloadTexture(backTex);
     UnloadTexture(estusTex);
-    UnloadSound(youdied);
+    UnloadSound(YOUDEAD);
+    emptyEntites();
+}
+
+void Game::load_tutorial(float x, float y) {
+    map.assignMap("levels/tutorial.out", 98, 23, {x, y}, {14, 6});
+    map.mapName = "tutorial";
+
+    gremlins.push_back(Gremlin(69 * map.tileSize, 8 * map.tileSize));
+}
+
+void Game::load_1(float x, float y) {
+    map.assignMap("levels/room1.out", 144, 48, {x, y});
+    map.mapName = "room1";
+
+    gremlins.push_back(Gremlin(11 * map.tileSize, 25 * map.tileSize));
+    gremlins.push_back(Gremlin(27 * map.tileSize, 25 * map.tileSize));
+    gremlins.push_back(Gremlin(119 * map.tileSize, 25 * map.tileSize));
+
+    gremlins.push_back(Gremlin(80 * map.tileSize, 31 * map.tileSize));
+    gremlins.push_back(Gremlin(89 * map.tileSize, 30 * map.tileSize));
+
+    gremlins.push_back(Gremlin(75 * map.tileSize, 22 * map.tileSize));
+    gremlins.push_back(Gremlin(76 * map.tileSize, 22 * map.tileSize));
+    gremlins.push_back(Gremlin(77 * map.tileSize, 22 * map.tileSize));
+    gremlins.push_back(Gremlin(78 * map.tileSize, 22 * map.tileSize));
+    gremlins.push_back(Gremlin(79 * map.tileSize, 22 * map.tileSize));
+    gremlins.push_back(Gremlin(80 * map.tileSize, 22 * map.tileSize));
+    gremlins.push_back(Gremlin(81 * map.tileSize, 22 * map.tileSize));
+    gremlins.push_back(Gremlin(82 * map.tileSize, 22 * map.tileSize));
+}
+
+void Game::load_2(float x, float y) {
+    map.assignMap("levels/room2.out", 91, 90, {x, y}, {16, 25});
+    map.mapName = "room2";
+
+}
+
+void Game::load_3(float x, float y) {
+    map.assignMap("levels/room3.out", 200, 155, {x, y}, {36, 124});
+    map.mapName = "room3";
+
+}
+
+void Game::load_4(float x, float y) {
+    
+}
+
+void Game::load_5(float x, float y) {
+    map.assignMap("levels/room5.out", 68, 80, {x, y}, {34, 68});
+    map.mapName = "room5";
+
+}
+
+void Game::load_6(float x, float y) {
+
 }

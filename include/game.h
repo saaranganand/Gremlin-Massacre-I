@@ -14,6 +14,7 @@
 #include <vector>
 #include <utility>
 #include <golden.h>
+#include <wizard.h>
 
 struct Game {
     bool close;
@@ -36,12 +37,15 @@ struct Game {
 
     Sound YOUDEAD;
 
+    Wizard boss;
+
     Music music;
 
     int youdiedFrames;
 
     float dt;
     int estusCost;
+    bool noticed;
 
     bool debugging;
 
@@ -55,6 +59,9 @@ struct Game {
 
     void shoppingUpdate();
     void shoppingDraw();
+
+    void noticeUpdate();
+    void noticeDraw();
 
     void drawGrid();
     void drawCameraCrosshair();
@@ -76,6 +83,8 @@ struct Game {
     void load_5(float x, float y);
 
     void load_6(float x, float y);
+
+    void load_gandalf(float x, float y);
 };
 
 #endif

@@ -10,19 +10,19 @@ void Wizard::castOrb(Vector2 dir) {
 void Wizard::castRay(Vector2 dir) {
     PlaySound(cast);
     anims.setAnim("cast");
-    beamAttack = { { position.x, position.y }, { dir.x * 1200, dir.y * 1200}};
+    beamAttack = { { position.x, position.y }, { dir.x * 1200, dir.y * 1200} };
 }
 
 void Wizard::reset(float x, float y) {
     position.x = x;
     position.y = y;
 
-    state = IDLE;
+    state = FOLLOW;
 
     health = maxHealth;
 }
 
-Wizard::Wizard(float x = 0.f, float y = 0.f) {
+Wizard::Wizard(float x, float y) : Actor(x, y, 200, 200) {
     anims = AnimationHandler();
 
     Vector2 dest = {200,200};
@@ -34,13 +34,15 @@ Wizard::Wizard(float x = 0.f, float y = 0.f) {
 
     anims.setAnim("idle");
 
-    state = IDLE;
+    state = FOLLOW;
+
+    active = false;
 
     orbattack = { { -10, -10 }, { 0, 0}};
     beamAttack = { { -10, -10 }, { 0, 0}};
 
-    orb = loadTextureUnloadImage("gandalf/orb.png");
-    beam = loadTextureUnloadImage("gandalf/beam.png");
+    orb = loadTextureUnloadImage("assets/gandalf/orb.png");
+    beam = loadTextureUnloadImage("assets/gandalf/lazer.png");
 
     groundAcceleration = 2000.f;
     groundMaxVelocity = 600.f;
@@ -48,18 +50,21 @@ Wizard::Wizard(float x = 0.f, float y = 0.f) {
     airAcceleration = 2000.f;
     airMaxVelocity = 700.f;
 
-    followRange = 200.f;
+    followRange = 130.f;
+
+    value = 1000.f;
 
     invincibilityTimer = Timer(0.5f);
     attackTimer = Timer(1.5f);
+    followTimer = Timer(1.f);
+    followTimer.start();
 
     maxHealth = 30;
     health = 30;
 
-    action = LoadSound("assets/wizard/beam.mp3");
-    hurt = LoadSound("assets/wizard/hurt.wav");
-    explosion = LoadSound("assets/wizard/explosion.wav");
-    cast = LoadSound("assets/wizard/laugh.mp3");
+    hurt = LoadSound("assets/gandalf/hurt.wav");
+    explosion = LoadSound("assets/gandalf/explosion.wav");
+    cast = LoadSound("assets/gandalf/laugh.mp3");
 }
 
 void Wizard::explode(std::vector<Coin>& coins) {
@@ -90,7 +95,9 @@ void Wizard::takeDamage(int damage, float knockback, Vector2 KB_dir, std::vector
 }
 
 void Wizard::update(Map map, Player& player, std::vector<Coin>& coins, float dt) {
+    if (!active) return;
     if (state == FOLLOW) {
+        followTimer.update(dt);
         if (position.x < player.position.x) {
             CH_velocity.x += airAcceleration * dt;
             if (CH_velocity.x > airMaxVelocity) CH_velocity.x = airMaxVelocity;
@@ -98,7 +105,7 @@ void Wizard::update(Map map, Player& player, std::vector<Coin>& coins, float dt)
             CH_velocity.x -= airAcceleration * dt;
             if (CH_velocity.x < -airMaxVelocity) CH_velocity.x = -airMaxVelocity;
         }
-        if (followRange - std::abs(position.x - player.position.x) < 10 && std::abs(position.x - player.position.x > followRange * 0.9) ) {
+        if (followRange - std::abs(position.x - player.position.x) < 10 && !followTimer.active) {
             state = CASTING;
             PlaySound(cast);
         }
@@ -106,7 +113,11 @@ void Wizard::update(Map map, Player& player, std::vector<Coin>& coins, float dt)
     if (state == CASTING) {
         if (!attackTimer.active) {
             int r = rand() % 2;
-            Vector2 dir = {};
+            Vector2 dir = { 1, 1 };
+            if (position.x > player.position.x) dir.x = -1;
+            else dir.x = 1;
+
+            dir.y = 1;
             if (r == 1) {
                 castOrb(dir);
             } else {
@@ -117,15 +128,79 @@ void Wizard::update(Map map, Player& player, std::vector<Coin>& coins, float dt)
         
         attackTimer.update(dt);
 
-        if (!attackTimer.active) state == FOLLOW;
+        if (!attackTimer.active) {
+            state = FOLLOW;
+            followTimer.start();
+        }
 
+    }
+    printf("x %.2f t %.2f\n", position.x, position.y);
+    position.x += CH_velocity.x * dt;
+    position.y = player.position.y - 120.f;
+
+    orbattack.position.x += orbattack.velocity.x * dt;
+    orbattack.position.y += orbattack.velocity.y * dt;
+    beamAttack.position.x += beamAttack.velocity.x * dt;
+    beamAttack.position.y += beamAttack.velocity.y * dt;
+
+    hurtbox.parentPosition.x = position.x;
+    hurtbox.parentPosition.y = position.y;
+
+    invincibilityTimer.update(dt);
+
+    if (player.atks.active && !invincibilityTimer.active) if (hurtbox.collides(player.atks.current->hitbox)) {
+        PlaySound(explosion);
+        float dirX = 1;
+        float dirY = -1;
+
+        if (right() < player.left()) dirX = -1;
+        if (top() > player.bottom()) dirY = 1;
+
+        player.KB_velocity.x = -1000.f;
+        if (player.atks.flipX) player.KB_velocity.x = 1000.f;
+        
+        takeDamage(1, 0.f, {dirX,dirY}, coins);
+        invincibilityTimer.start();
+
+        if (player.atks.current == &player.atks.attacks["pogo"]) {
+            player.CH_velocity.y = player.jumpVelocity;
+        }
+    }
+
+    if (!player.invincibilityTimer.active) {
+        if (orbattack.position.x < player.right() && orbattack.position.x > player.left() && orbattack.position.y < player.bottom() && orbattack.position.x > player.top()) {
+            float dirX = 1;
+            float dirY = -1;
+
+            if (right() < player.left()) dirX = -1;
+            if (top() > player.bottom()) dirY = 1;
+
+            player.KB_velocity.x = -1000.f;
+            if (player.atks.flipX) player.KB_velocity.x = 1000.f;
+
+            player.takeDamage(1, 700.f, {-dirX, dirY});
+            player.invincibilityTimer.start();
+        }
+        if (beamAttack.position.x < player.right() && beamAttack.position.x > player.left() && beamAttack.position.y < player.bottom() && beamAttack.position.x > player.top()) {
+            float dirX = 1;
+            float dirY = -1;
+
+            if (right() < player.left()) dirX = -1;
+            if (top() > player.bottom()) dirY = 1;
+
+            player.KB_velocity.x = -1000.f;
+            if (player.atks.flipX) player.KB_velocity.x = 1000.f;
+
+            player.takeDamage(1, 700.f, {-dirX, dirY});
+            player.invincibilityTimer.start();
+        }
     }
 }
 void Wizard::draw(bool debugging, float dt) {
+    if (!active) return;
     if (exploded) return;
     if (debugging) {
         hurtbox.draw();
-        atks.current->hitbox.draw();
     }
 
     Color tint = WHITE;

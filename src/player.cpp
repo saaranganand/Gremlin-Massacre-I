@@ -215,7 +215,7 @@ bool Player::checkLadder(Map map) {
     return false;
 }
 
-bool Player::update(Map map, UI ui, float dt) {
+State Player::update(Map map, UI ui, bool noticed, float dt) {
     deaccelerateKnockback(dt);
     applyGravity(dt);
     checkIfNotGrounded(dt);
@@ -278,20 +278,25 @@ bool Player::update(Map map, UI ui, float dt) {
     }
     if (IsKeyPressed(ui.heal)) {
         if (checkShop(map)) {
-            return true;
+            return SHOPPING;
         } else if (estus > 0 && !checkBonfire(map) && health < maxHealth) {
             estus--;
             health++;
         }
     }
     
+    if (IsKeyPressed(ui.dash) && noticed) {
+        if (checkBonfire(map)) {
+            return WIZARDING;
+        }
+    }
     
     if (atks.active && atks.current != NULL) anims.current = &anims.animations[atks.current->anim.c_str()];
     else if (CH_velocity.y != 0.f || !grounded) anims.current = &anims.animations["fall"];
     else if (CH_velocity.x != 0.f) anims.current = &anims.animations["run"];
     else anims.current = &anims.animations["idle"];
     anims.update(dt);
-    return false;
+    return PLAY;
 }
 
 void Player::draw(bool debugging, float dt) {

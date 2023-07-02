@@ -62,6 +62,7 @@ Game::Game() {
     estusCost = 5;
 
     debugging = true;
+    noticed = false;
 
     coinTexture = loadTextureUnloadImage("assets/coin.png");
     estusTex = loadTextureUnloadImage("assets/estus.png");
@@ -76,9 +77,16 @@ Game::Game() {
 }
 
 void Game::update() {
-    if (player.update(map, ui, dt)) {
-        state = SHOPPING;
+    state = player.update(map, ui, noticed, dt);
+
+    if (state == WIZARDING) {
+        state = PLAY;
+        map.reset();
+        load_gandalf(54, 14);
+        player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
+
     }
+
     if (player.health <= 0) {
         state = YOUDIED;
         return;
@@ -92,6 +100,8 @@ void Game::update() {
     for (Golden& a : goldens) {
         a.update(map, player, coins, dt);
     }
+    boss.update(map, player, coins, dt);
+    printf("test\n");
     updateCameraToMap(camera, player, map);
     int i = 0;
     for (Coin& c : coins) {
@@ -101,9 +111,13 @@ void Game::update() {
         }
         i++;
     }
+    printf("test\n");
     Game::transitionStage();
+    printf("test\n");
 
     if (IsKeyPressed(ui.pause)) state = MENU;
+    printf("test\n");
+    if (player.coins >= 5 && !noticed) state = NOTICE;
 }
 
 void Game::draw() {
@@ -132,7 +146,9 @@ void Game::draw() {
     for (Coin& c : coins) {
         c.draw(coinTexture);
     }
-
+    printf("test1\n");
+    boss.draw(debugging, dt);
+    printf("test2\n");
     EndMode2D();
 
     player.drawHP();
@@ -140,6 +156,62 @@ void Game::draw() {
     DrawTexturePro(estusTex, {0, 0, 34, 34}, { 5, 120, 80, 80}, ZERO, 0.f, WHITE);
 
     //if (debugging) drawCameraCrosshair();
+
+    EndDrawing();
+}
+
+
+void Game::noticeUpdate() {
+    if (IsKeyPressed(ui.accept) || IsKeyPressed(ui.back)) {
+        state = PLAY;
+        noticed = true;
+    }
+}
+
+void Game::noticeDraw() {
+    BeginDrawing();
+
+    ClearBackground(BLACK);
+
+    DrawTexturePro(backTex, {0, 0, 1920, 1080}, {0, -100, 1920, 1080}, ZERO, 0.f, WHITE);
+
+    BeginMode2D(camera);
+
+    map.draw(camera);
+
+    //if (debugging) drawGrid();
+
+    player.draw(debugging, dt);
+    
+    for (Gremlin& a : gremlins) {
+        a.draw(debugging, dt);
+    }
+    for (Frog& a : frogs) {
+        a.draw(debugging, dt);
+    }
+
+
+    for (Golden& a : goldens) {
+        a.draw(debugging, dt);
+    }
+
+    for (Coin& c : coins) {
+        c.draw(coinTexture);
+    }
+
+
+    DrawRectangle(player.position.x - 400, player.position.y - 300, 500 + player.hurtbox.size.x, 250, DARKBLUE);
+    DrawText("The great wizard has recognized your talents!", player.position.x - 400, player.position.y - 290, 20, WHITE);
+    DrawText("He has invited you to the exam...", player.position.x - 400, player.position.y - 245, 20, WHITE);
+    DrawText("When you see yourself ready, head to a magic bonfire", player.position.x - 400, player.position.y - 200, 20, WHITE);
+    DrawText("There, you can press your shit key to meet to great wizard", player.position.x - 400, player.position.y - 160, 20, WHITE);
+    DrawText("Good luck! hehe", player.position.x - 400, player.position.y - 120, 20, WHITE);
+
+    EndMode2D();
+
+    player.drawHP();
+    DrawTexturePro(coinTexture, {0, 0, 46, 52}, { 20, 65, 50, 60}, ZERO, 0.f, WHITE);
+    DrawTexturePro(estusTex, {0, 0, 34, 34}, { 5, 120, 80, 80}, ZERO, 0.f, WHITE);
 
     EndDrawing();
 }
@@ -550,4 +622,12 @@ void Game::load_6(float x, float y) {
     gremlins.push_back(Gremlin(36 * map.tileSize, 20 * map.tileSize));
     gremlins.push_back(Gremlin(37 * map.tileSize, 20 * map.tileSize));
     gremlins.push_back(Gremlin(38 * map.tileSize, 20 * map.tileSize));
+}
+
+void Game::load_gandalf(float x, float y) {
+    map.assignMap("levels/gandalfroom.out", 62, 27, {x, y});
+    map.mapName = "gandalfroom";
+
+    boss = Wizard(12 * map.tileSize, 18 * map.tileSize);
+    boss.active = true;
 }

@@ -7,7 +7,7 @@
 #include <map.h>
 #include <coin.h>
 
-enum WizardState { IDLE, CASTING, FOLLOW };
+enum WizardState { IDLING, CASTING, FOLLOW };
 
 struct Orb {
     Vector2 position;
@@ -27,6 +27,8 @@ struct Wizard : Actor {
     Orb orbattack;
     Beam beamAttack;
 
+    bool active;
+
     Sound action;
     Sound hurt;
     Sound explosion;
@@ -37,6 +39,7 @@ struct Wizard : Actor {
 
     Timer invincibilityTimer;
     Timer attackTimer;
+    Timer followTimer;
 
     void castOrb(Vector2 dir);
     void castRay(Vector2 dir);

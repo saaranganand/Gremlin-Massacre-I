@@ -70,7 +70,7 @@ struct Player: Actor {
 
     bool checkLadder(Map map);
 
-    bool update(Map map, UI ui, float dt);
+    State update(Map map, UI ui, bool noticed, float dt);
     void draw(bool debugging, float dt);
     void drawHP();
 

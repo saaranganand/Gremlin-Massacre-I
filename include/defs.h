@@ -9,7 +9,7 @@ extern int SCREEN_H;;
 
 #define ZERO { 0.f, 0.f }
 
-enum State { MENU = 0, PLAY, OPTIONS, YOUDIED, SHOPPING, QUIT };
+enum State { MENU = 0, PLAY, OPTIONS, YOUDIED, SHOPPING, NOTICE, WIZARDING, QUIT };
 
 Vector2 convertTopLeft(Vector2 vector, Vector2 size);
 Rectangle convertTopLeft(Rectangle rectangle);

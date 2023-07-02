@@ -27,6 +27,8 @@ UI::UI() {
     menuMax = 0;
 
     volume = 50;
+
+    backG = loadTextureUnloadImage("assets/logo.png");
 }
 
 State UI::menuing() {
@@ -138,6 +140,8 @@ void UI::drawMenu() {
     BeginDrawing();
     
     ClearBackground(BLACK);
+
+    DrawTexturePro(backG, {0, 0, 67, 59}, {(SCREEN_W - 67) / 2.f, 20, 67 * 4, 59 * 4}, {0, 0}, 0.f, WHITE);
 
     drawButton(200, 100, "Play", 40, WHITE, BLACK, 4.f, 1.f, 120);
     drawButton(200, 100, "Options", 40, WHITE, BLACK, 4.f, 2.f, 60);

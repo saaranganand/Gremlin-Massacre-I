@@ -43,7 +43,15 @@ int main() {
                 game.shoppingUpdate();
                 game.shoppingDraw();
                 break;
-            
+            case NOTICE:
+                game.noticeUpdate();
+                game.noticeDraw();
+                break;
+            case WIZARDING:
+                game.update();
+                game.draw();
+                if (game.state == YOUDIED) PlaySound(game.YOUDEAD);
+                break;
             case OPTIONS:
                 game.state = game.ui.optioning(game.camera.zoom, game.dt);
                 game.ui.drawOptions();

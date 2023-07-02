@@ -19,6 +19,7 @@ struct UI {
     KeyboardKey jump;
     KeyboardKey heal;
     KeyboardKey dash;
+    Texture2D backG;
 
     int menuState;
     int menuMax;

@@ -44,7 +44,7 @@ Game::Game() {
         } else if (player.currentBonfire == "room5") {
             load_5(d.bonfireX, d.bonfireY);
             player = Player(map.startTile.x * map.tileSize, map.startTile.y * map.tileSize);
-            player.bonfires["room5"] = {33, 62, 68, 80};
+            player.bonfires["room5"] = {33,59, 68, 80};
             player.currentBonfire = "room5";
         }
 
@@ -101,7 +101,6 @@ void Game::update() {
         a.update(map, player, coins, dt);
     }
     boss.update(map, player, coins, dt);
-    printf("test\n");
     updateCameraToMap(camera, player, map);
     int i = 0;
     for (Coin& c : coins) {
@@ -111,12 +110,9 @@ void Game::update() {
         }
         i++;
     }
-    printf("test\n");
     Game::transitionStage();
-    printf("test\n");
 
     if (IsKeyPressed(ui.pause)) state = MENU;
-    printf("test\n");
     if (player.coins >= 300 && !noticed) state = NOTICE;
 }
 

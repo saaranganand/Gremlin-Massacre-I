@@ -134,7 +134,6 @@ void Wizard::update(Map map, Player& player, std::vector<Coin>& coins, float dt)
         }
 
     }
-    printf("x %.2f t %.2f\n", position.x, position.y);
     position.x += CH_velocity.x * dt;
     position.y = player.position.y - 120.f;
 

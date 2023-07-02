@@ -11,10 +11,6 @@
 enum GremlinState { IDLE = 0, RUNLEFT, RUNRIGHT, FIGHT, SCARED };
 
 struct Gremlin : Actor {
-    AttackHandler atks;
-
-    AnimationHandler anims;
-
     GremlinState state;
 
     float aggroRange;

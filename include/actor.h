@@ -5,6 +5,10 @@
 #include <defs.h>
 #include <collider.h>
 #include <map.h>
+#include <string>
+#include <animation.h>
+#include <timer.h>
+#include <attack.h>
 
 #define COLLISION_EDGE 0.01f
 
@@ -18,6 +22,10 @@ struct Actor {
     Vector2 position;
 
     Collider hurtbox;
+
+    AttackHandler atks;
+
+    AnimationHandler anims;
 
     bool alive;
     int maxHealth;
@@ -39,6 +47,8 @@ struct Actor {
     Vector2 KB_velocity;
 
     Actor(float x = 0.f, float y = 0.f, float w = 0.f, float h = 0.f);
+
+    void createAnimation(std::string dir, std::string tag, int frames, Vector2 source, Vector2 dest, bool loop, Vector2 offsets, float flipOffset, int fps = 10);
 
     void deaccelerateKnockback(float dt);
 

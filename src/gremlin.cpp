@@ -17,12 +17,12 @@ Gremlin::Gremlin(float x, float y) : Actor(x, y, 30, 50) {
     _run.sheet = run;
     anims.animations["run"] = _run;
 
-    Texture jump = loadTextureUnloadImage("assets/player/jump.png");
+    Texture jump = loadTextureUnloadImage("assets/player/midair.png");
     Animation _jump = Animation(1, 30.f, 50.f, sourceWidth, sourceHeight, false, -25.f, -5.f, -45.f);
     _jump.sheet = jump;
     anims.animations["jump"] = _jump;
 
-    Texture neutral = loadTextureUnloadImage("assets/player/neutral.png");
+    Texture neutral = loadTextureUnloadImage("assets/player/attack.png");
     Animation _neutral = Animation(4, 66.f, 43.f, 66.f * 2.5f, 43.f * 2.5f, false, -110.f, -5.f, -27.f, 10);
     _neutral.sheet = neutral;
     anims.animations["neutral"] = _neutral;

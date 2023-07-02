@@ -5,51 +5,33 @@
 #include <math.h>
 #include <stdio.h>
 
-Player::Player(float x, float y) : Actor(x, y, 40, 80) {
-    anims = AnimationHandler();
+void Player::loadAnimationsAtacks() {
+    
+    Vector2 dest = {64,64};
+    Vector2 offset = {0,0};
+    float fxOff = 0.f;
 
-    float sourceWidth = 30.f * 2.5;
-    float sourceHeight = 50.f * 2.5;
-
-    Texture idle = loadTextureUnloadImage("assets/player/idle.png");
-    Animation _idle = Animation(1, 30.f, 50.f, sourceWidth, sourceHeight, false, -25.f, -5.f, -45.f);
-    _idle.sheet = idle;
-    anims.animations["idle"] = _idle;
-
-    Texture run = loadTextureUnloadImage("assets/player/run.png");
-    Animation _run = Animation(10, 30.f, 50.f, sourceWidth, sourceHeight, true, -25.f, -5.f, -45.f, 20);
-    _run.sheet = run;
-    anims.animations["run"] = _run;
-
-    Texture jump = loadTextureUnloadImage("assets/player/jump.png");
-    Animation _jump = Animation(1, 30.f, 50.f, sourceWidth, sourceHeight, false, -25.f, -5.f, -45.f);
-    _jump.sheet = jump;
-    anims.animations["jump"] = _jump;
-
-    Texture fall = loadTextureUnloadImage("assets/player/midair.png");
-    Animation _fall = Animation(1, 30.f, 50.f, sourceWidth, sourceHeight, false, -25.f, -5.f, -45.f);
-    _fall.sheet = fall;
-    anims.animations["fall"] = _fall;
-
-    Texture neutralAttack = loadTextureUnloadImage("assets/player/attack.png");
-    Animation _neutral = Animation(4, 66.f, 43.f, 66.f * 2.5f, 43.f * 2.5f, false, -110.f, -5.f, -27.f, 10);
-    _neutral.sheet = neutralAttack;
-    anims.animations["neutral"] = _neutral;
-
-    Texture pogoAttack = loadTextureUnloadImage("assets/player/down-attack.png");
-    Animation _downATK = Animation(4, 66.f, 43.f, 66.f * 2.5f, 43.f * 2.5f, false, -110.f, -5.f, -27.f, 10);
-    _downATK.sheet = pogoAttack;
-    anims.animations["pogo"] = _downATK;
+    createAnimation("player/", "idle", 1, {32,32}, dest, false, offset, fxOff);
+    createAnimation("player/", "run", 4, {32,32}, dest, false, offset, fxOff);
+    createAnimation("player/", "fall", 1, {32,32}, dest, false, offset, fxOff);
+    createAnimation("player/", "neutral", 5, {32,32}, dest, false, offset, fxOff);
+    createAnimation("player/", "pogo", 4, {32,32}, dest, false, offset, fxOff);
 
     anims.setAnim("idle");
 
-    Attack neutralA("neutral", 100.f, 110.f, hurtbox.size.x, -30.f, -100.f, 0.5f, 0.02f);
-    Attack pogo("neutral", 90.f, 90.f, -45.f + hurtbox.size.x / 2.f, hurtbox.size.y, 0.f, 0.5f, 0.05f);
+    Attack neutral("neutral", 100.f, 110.f, hurtbox.size.x, -30.f, -100.f, 0.5f, 0.02f);
+    Attack pogo("pogo", 90.f, 90.f, -45.f + hurtbox.size.x / 2.f, hurtbox.size.y, 0.f, 0.5f, 0.05f);
 
     atks = AttackHandler();
-    atks.attacks["neutral"] = neutralA;
+    atks.attacks["neutral"] = neutral;
     atks.attacks["pogo"] = pogo;
-    atks.current = &neutralA;
+    atks.current = &neutral;
+}
+
+Player::Player(float x, float y) : Actor(x, y, 40, 80) {
+    anims = AnimationHandler();
+
+    loadAnimationsAtacks();
 
     earlyJumpTimer = Timer(.1f);
     lateJumpTimer = Timer(.1f);
@@ -155,7 +137,7 @@ void Player::update(Map map, UI ui, float dt) {
     }
 
     if (atks.active && atks.current != NULL) anims.current = &anims.animations[atks.current->anim.c_str()];
-    else if (CH_velocity.y != 0.f || !grounded) anims.current = &anims.animations["jump"];
+    else if (CH_velocity.y != 0.f || !grounded) anims.current = &anims.animations["fall"];
     else if (CH_velocity.x != 0.f) anims.current = &anims.animations["run"];
     else anims.current = &anims.animations["idle"];
 

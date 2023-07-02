@@ -43,8 +43,8 @@ void deaccelerateToZero(float& velocity, float deacceleration, float dt) {
     if (sign(velocity) != velocityDirection) velocity = 0.f;
 }
 
-Texture2D loadTextureUnloadImage(const char* path) {
-    Image img = LoadImage(path);
+Texture2D loadTextureUnloadImage(std::string path) {
+    Image img = LoadImage(path.c_str());
     Texture2D tex = LoadTextureFromImage(img);
     UnloadImage(img);
     return tex;

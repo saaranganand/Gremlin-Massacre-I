@@ -29,6 +29,17 @@ Actor::Actor(float x, float y, float w, float h) {
     KB_velocity = ZERO;
 }
 
+void Actor::createAnimation(std::string dir, std::string tag, int frames, Vector2 source, Vector2 dest, bool loop, Vector2 offset, float flipOffset, int fps) {
+    std::string startDir = "assets/";
+    std::string extension = ".png";
+    
+    Texture tex = loadTextureUnloadImage(startDir + dir + tag + extension);
+    Animation anim = Animation(frames, source.x, source.y, dest.x, dest.y, loop, offset.x, offset.y, flipOffset, fps);
+    
+    anim.sheet = tex;
+    anims.animations[tag] = anim;
+}
+
 void Actor::deaccelerateKnockback(float dt) {
     deaccelerateToZero(KB_velocity.x, KNOCKBACK_DEACCELERATION, dt);
     deaccelerateToZero(KB_velocity.y, KNOCKBACK_DEACCELERATION, dt);

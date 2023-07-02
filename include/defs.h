@@ -2,6 +2,7 @@
 #define DEFS_H_
 
 #include <raylib.h>
+#include <string>
 
 extern int SCREEN_W;
 extern int SCREEN_H;;
@@ -21,6 +22,6 @@ void clamp(int& a, int min, int max);
 
 void deaccelerateToZero(float& velocity, float deacceleration, float dt);
 
-Texture2D loadTextureUnloadImage(const char* path);
+Texture2D loadTextureUnloadImage(std::string );
 
 #endif

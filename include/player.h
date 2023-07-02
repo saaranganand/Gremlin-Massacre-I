@@ -16,10 +16,6 @@
 
 
 struct Player: Actor {    
-    AttackHandler atks;
-
-    AnimationHandler anims;
-
     Timer earlyJumpTimer;
     Timer lateJumpTimer;
 
@@ -31,6 +27,8 @@ struct Player: Actor {
 
     
     Timer invincibilityTimer;
+
+    void loadAnimationsAtacks();
 
     Player(float x = 0.f, float y = 0.f);
 

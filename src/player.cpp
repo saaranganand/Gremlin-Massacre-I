@@ -7,20 +7,20 @@
 
 void Player::loadAnimationsAtacks() {
     
-    Vector2 dest = {64,64};
-    Vector2 offset = {0,0};
-    float fxOff = 0.f;
+    Vector2 dest = {120,120};
+    Vector2 offset = {0,-27};
+    float fxOff = -78.f;
 
     createAnimation("player/", "idle", 1, {32,32}, dest, false, offset, fxOff);
-    createAnimation("player/", "run", 4, {32,32}, dest, false, offset, fxOff);
+    createAnimation("player/", "run", 4, {32,32}, dest, true, offset, fxOff);
     createAnimation("player/", "fall", 1, {32,32}, dest, false, offset, fxOff);
     createAnimation("player/", "neutral", 5, {32,32}, dest, false, offset, fxOff);
-    createAnimation("player/", "pogo", 4, {32,32}, dest, false, offset, fxOff);
+    createAnimation("player/", "pogo", 5, {32,32}, dest, false, offset, fxOff);
 
     anims.setAnim("idle");
 
     Attack neutral("neutral", 100.f, 110.f, hurtbox.size.x, -30.f, -100.f, 0.5f, 0.02f);
-    Attack pogo("pogo", 90.f, 90.f, -45.f + hurtbox.size.x / 2.f, hurtbox.size.y, 0.f, 0.5f, 0.05f);
+    Attack pogo("pogo", 90.f, 90.f, -45.f + hurtbox.size.x / 2.f, hurtbox.size.y, -45.f / 2.f, 0.5f, 0.05f);
 
     atks = AttackHandler();
     atks.attacks["neutral"] = neutral;
@@ -65,10 +65,6 @@ void Player::handleJump(KeyboardKey jumpKey, float dt) {
     lateJumpTimer.update(dt);
 }
 
-void Player::takeDamage(float KB_tile) {
-    if (health > 0) health--; 
-}
-
 bool Player::handleMapDamage(Map map) {
     // Loop through all cells that player currently lies in.
     int leftColumn = left() / map.tileSize;
@@ -81,7 +77,13 @@ bool Player::handleMapDamage(Map map) {
         for (int y = topRow; y <= bottomRow; y++) {
             if (map.getTile(x, y)->type == DAMAGE) {
                 // Take damage and knockback, and set off invincibility timer.
-                takeDamage(0.f);
+                float dirX = 1;
+                if (right() < x * map.tileSize + map.tileSize / 2.f) dirX = -1;
+
+                float dirY = 1;
+                if (bottom() < y * map.tileSize + map.tileSize / 2.f) dirY = -1;
+
+                takeDamage(map.getTile(x, y)->damage , 1200.f, {dirX, dirY});
                 invincibilityTimer.start();
                 return true;
             }
@@ -115,15 +117,24 @@ void Player::update(Map map, UI ui, float dt) {
     // Take damage
     // Handle death
 
-    // Apply knockback
-
     if (IsKeyDown(ui.action)) {
         if (IsKeyDown(ui.down) && !grounded) atks.play("pogo");
         else atks.play("neutral");
     }
     atks.update(position.x, position.y, dt);
 
-    // Apply knockback
+    if (atks.active && atks.current == &atks.attacks["neutral"] && atks.attackTime / dt < 2) {
+        if (hitStage(map, atks.current->hitbox, STATIC)) {
+            KB_velocity.x = -1000.f;
+            if (atks.flipX) KB_velocity.x = 1000.f;
+        }
+    }
+
+    if (atks.active && atks.current == &atks.attacks["pogo"]) {
+        if (hitStage(map, atks.current->hitbox, DAMAGE)) {
+            CH_velocity.y = jumpVelocity;
+        }
+    }
 
     if (!atks.active && CH_velocity.x != 0.f) {
         if (sign(CH_velocity.x) == 1) {
@@ -142,43 +153,6 @@ void Player::update(Map map, UI ui, float dt) {
     else anims.current = &anims.animations["idle"];
 
     anims.update(dt);
-
-    /*
-    if (IsKeyDown(ui.down) && !grounded) {
-        neutral.hitbox.size.x = 120;
-        neutral.hitbox.size.y = 120;
-        neutral.offset.x = 0;
-        neutral.offset.y = 80;
-        neutral.pogo = true; 
-    } else {
-        neutral.hitbox.size.x = 80;
-        neutral.hitbox.size.y = 120;
-        neutral.offset.x = 50;
-        neutral.offset.y = 0;
-        neutral.pogo = false; 
-    }
-
-    if (IsKeyPressed(ui.action)) neutral.attempt();
-    if (neutral.applyAffect) {
-        neutral.applyAffect = false;
-
-        int factor = 1;
-        if (!neutral.flipOffsetX) factor = -1;
-        
-        if (neutral.pogo) {
-            if (isPogoKnockback(map)) {
-                CHVelocity.y = 0.f;
-                KBVelocity.y = -pogoKB;
-            }
-        } else if (isSwingKnockback(map)) KBVelocity.x = factor * swingKB;
-    }
-    neutral.update(position, dt);
-    if (!neutral.hitbox.active) {
-        if (direction == -1) neutral.flipOffsetX = true;
-        else neutral.flipOffsetX = false;
-    }
-
-    */
 }
 
 void Player::draw(bool debugging, float dt) {

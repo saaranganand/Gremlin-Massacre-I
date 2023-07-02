@@ -41,17 +41,17 @@ void Map::writeMap(const char* file) {
 }
 
 void Map::createTiles() {
-    Tile air = Tile(BACKGROUND);
-    air.source = {0.f, 0.f, 64.f, 64.f};
+    Tile error = Tile(BACKGROUND);
+    error.source = {0.f, 0.f, 64.f, 64.f};
 
-    Tile spike = Tile(DAMAGE, 400.f, 1, true);
+    Tile spike = Tile(DAMAGE, 1, true);
     spike.source = {64.f, 0.f, 64.f, 64.f};
 
     Tile wall = Tile(STATIC);
     wall.source = {128.f, 0.f, 64.f, 64.f};
 
-    Tile error = Tile(NONE);
-    error.source = {192.f, 0.f, 64.f, 64.f};
+    Tile air = Tile(NONE);
+    air.source = {192.f, 0.f, 64.f, 64.f};
 
     tiles[26] = wall;
     tiles[2] = air;

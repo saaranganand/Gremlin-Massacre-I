@@ -34,7 +34,7 @@ void Actor::createAnimation(std::string dir, std::string tag, int frames, Vector
     std::string extension = ".png";
     
     Texture tex = loadTextureUnloadImage(startDir + dir + tag + extension);
-    Animation anim = Animation(frames, source.x, source.y, dest.x, dest.y, loop, offset.x, offset.y, flipOffset, fps);
+    Animation anim = Animation(frames, source.x, source.y, dest.x, dest.y, loop, flipOffset, offset.x, offset.y, fps);
     
     anim.sheet = tex;
     anims.animations[tag] = anim;
@@ -208,6 +208,37 @@ void Actor::collideWithHorizontalStaticStage(Map map, float dt) {
     position.x += (closest - movingEdge) - COLLISION_EDGE * direction;
 
     return;
+}
+
+void Actor::takeDamage(int damage, float knockback, Vector2 KB_dir) {
+    printf("dmg = %d", damage);
+    health -= damage;
+    if (health < 0) {
+        // handle
+        health = 0;
+    }
+
+    KB_velocity.x = knockback * KB_dir.x;
+    KB_velocity.y = knockback * KB_dir.y;
+}
+
+bool Actor::hitStage(Map map, Collider box, TileType tType) {
+    Vector2 pos = {box.parentPosition.x + box.offset.x,box.parentPosition.y + box.offset.y};
+    // Loop through all cells that player currently lies in.
+    int leftColumn = pos.x / map.tileSize;
+    int rightCloumn = (pos.x + box.size.x) / map.tileSize;
+
+    int topRow = pos.y / map.tileSize;
+    int bottomRow = (pos.y + box.size.y) / map.tileSize;
+
+    for (int x = leftColumn; x <= rightCloumn; x++) {
+        for (int y = topRow; y <= bottomRow; y++) {
+            if (map.getTile(x, y)->type == tType) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 float Actor::left() {

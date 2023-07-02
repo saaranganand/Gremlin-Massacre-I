@@ -37,9 +37,9 @@ struct Player: Actor {
 
     void handleJump(KeyboardKey jumpKey, float dt);
 
-    void takeDamage(float KB_tile);
-
     bool handleMapDamage(Map map);
+
+    void collideWithStage(Map map);
 
     void update(Map map, UI ui, float dt);
     void draw(bool debugging, float dt);

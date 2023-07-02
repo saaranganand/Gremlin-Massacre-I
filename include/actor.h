@@ -16,7 +16,7 @@
 #define MAX_GRAVITY_VELOCITY 1200.f
 #define NOT_GROUNDED_THRESHOLD 1600.f
 
-#define KNOCKBACK_DEACCELERATION 1800.f
+#define KNOCKBACK_DEACCELERATION 3000.f
 
 struct Actor {
     Vector2 position;
@@ -59,6 +59,10 @@ struct Actor {
 
     void handleInput(int input, float dt);
     void collideWithHorizontalStaticStage(Map map, float dt);
+
+    void takeDamage(int damage, float knockback, Vector2 KB_dir);
+
+    bool hitStage(Map map, Collider box, TileType tType);
 
     float left();
     float right();

@@ -1,7 +1,7 @@
 import PIL
 from PIL import Image
 
-rooms = ["tutorial", "room1", "room2", "room3"]
+rooms = ["tutorial", "room1", "room2", "room3", "room5"]
 
 for room in rooms:
     name = room

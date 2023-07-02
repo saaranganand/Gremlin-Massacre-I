@@ -35,7 +35,7 @@ void Player::loadAnimationsAtacks() {
     anims.setAnim("idle");
 
     Attack neutral("neutral", 90.f, 50.f, hurtbox.size.x, 20.f, -100.f, 0.5f, 0.02f);
-    Attack pogo("pogo", 90.f, 90.f, -45.f + hurtbox.size.x / 2.f, hurtbox.size.y, -45.f / 2.f, 0.5f, 0.05f);
+    Attack pogo("pogo", 90.f, 120.f, -45.f + hurtbox.size.x / 2.f, hurtbox.size.y, -45.f / 2.f, 0.5f, 0.05f);
 
     atks = AttackHandler();
     atks.attacks["neutral"] = neutral;

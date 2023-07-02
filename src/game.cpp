@@ -11,9 +11,7 @@ Game::Game() {
     ui = UI();
 
     map = Map();
-    map.assignMap("levels/tutorial.out", 98, 23, {9, 6}, {14, 6});
-    map.mapName = "tutorial";
-    
+    load_tutorial(map, 9, 6);
 
     player = Player(map.startTile.x * map.tileSize, map.startTile.y * map.tileSize);
     player.bonfires["tutorial"] = {14, 6, 98, 23};
@@ -188,25 +186,68 @@ void Game::transitionStage() {
             if (map.getTile(x, y)->type == TRANSITION) {
                 if (map.mapName == "tutorial") {
                     map.reset();
-                    map.assignMap("levels/room1.out", 144, 48, {1, 25});
-                    map.mapName = "room1";
+                    load_1(map, 1, 25);
                     player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                     
                 }
                 else if (map.mapName == "room1") {
                     if ((player.position.x / map.tileSize) < 3) {
                         map.reset();
-                        map.assignMap("levels/tutorial.out", 98, 23, {96, 8}, {14, 6});
-                        map.mapName = "tutorial";
+                        load_tutorial(map, 96, 8);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                     } else {
                         map.reset();
-                        map.assignMap("levels/room2.out", 91, 90, {2, 27}, {16, 25});
-                        map.mapName = "room2";
+                        load_2(map, 2, 27);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                     }
-                    
-                    
+                }
+                else if (map.mapName == "room2") {
+                    if ((player.position.x / map.tileSize) < 3) {
+                        map.reset();
+                        load_1(map, 142, 25);
+                        player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
+                    }
+                    else if ((player.position.y / map.tileSize) < 3) {
+                        map.reset();
+                        load_3(map, 179, 152);
+                        player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
+                        player.CH_velocity.y = -2000.f;
+                    }
+                    else if ((player.position.y / map.tileSize) > 60) {
+                        map.reset();
+                        load_5(map, 1, 52);
+                        player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
+                    } else {
+                        map.reset();
+                        load_5(map, 1, 13);
+                        player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
+                    }
+                }
+                else if (map.mapName == "room3") {
+                    if ((player.position.y / map.tileSize) < 78) { // top
+                        map.reset();
+                        load_4(map, 0, 0);
+                        player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
+                    } else {
+                        map.reset();
+                        load_2(map, 27, 2);
+                        player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
+                    }
+                }
+                else if (map.mapName == "room5") {
+                    if ((player.position.x / map.tileSize) > 30) {
+                        map.reset();
+                        load_6(map, 0, 0);
+                        player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
+                    } else if ((player.position.y / map.tileSize) > 36) {
+                        map.reset();
+                        load_2(map, 89, 75);
+                        player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
+                    } else {
+                        map.reset();
+                        load_2(map, 89, 52);
+                        player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
+                    }
                 }
                 return;
             }

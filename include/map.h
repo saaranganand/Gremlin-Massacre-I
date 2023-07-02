@@ -59,5 +59,18 @@ struct Map {
     void draw(Camera2D camera);
 };
 
+void load_tutorial(Map& map, float x, float y);
+void load_1(Map& map, float x, float y);
+
+void load_2(Map& map, float x, float y);
+
+void load_3(Map& map, float x, float y);
+
+void load_4(Map& map, float x, float y);
+
+void load_5(Map& map, float x, float y);
+
+void load_6(Map& map, float x, float y);
+
 
 #endif

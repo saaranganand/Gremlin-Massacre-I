@@ -46,6 +46,9 @@ Game::Game() {
             player = Player(map.startTile.x * map.tileSize, map.startTile.y * map.tileSize);
             player.bonfires["room5"] = {33,59, 68, 80};
             player.currentBonfire = "room5";
+
+            player.position.x = 33 * map.tileSize;
+            player.position.y = 61 * map.tileSize;
         }
 
         player.coins = coins;

@@ -14,6 +14,8 @@ void Player::resetDeath() {
 
     KB_velocity.x = 0.f;
     KB_velocity.y = 0.f;
+
+    coins -= 10;
 }
 
 void Player::loadAnimationsAtacks() {

@@ -1,20 +1,24 @@
 import PIL
 from PIL import Image
 
-name = "room2"
-dir = "maps/" + name + "/"
-map = Image.open(dir + name + ".png")
-mapPixels = map.load()
+rooms = ["tutorial", "room1", "room2", "room3"]
 
-mapData = open(dir + name + ".data", "r")
+for room in rooms:
+    name = room
+    dir = "maps/" + name + "/"
+    map = Image.open(dir + name + ".png")
+    mapPixels = map.load()
 
-mapWidth = int(mapData.readline())
-mapHeight = int(mapData.readline())
+    mapData = open(dir + name + ".data", "r")
 
-print(mapWidth, mapHeight)
+    mapWidth = int(mapData.readline())
+    mapHeight = int(mapData.readline())
 
-mapStruct = open("../levels/" + name + ".out", "x")
+    print(mapWidth, mapHeight)
 
-for x in range(mapWidth):
-    for y in range(mapHeight):
-        mapStruct.write(str(mapPixels[x, y]) + ",")
+    mapStruct = open("../levels/" + name + ".out", "x")
+
+    for x in range(mapWidth):
+        for y in range(mapHeight):
+            mapStruct.write(str(mapPixels[x, y]) + ",")
+

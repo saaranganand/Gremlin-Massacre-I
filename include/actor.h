@@ -49,6 +49,8 @@ struct Actor {
 
     int value;
 
+    void resetDeath();
+
     Actor(float x = 0.f, float y = 0.f, float w = 0.f, float h = 0.f);
 
     void createAnimation(std::string dir, std::string tag, int frames, Vector2 source, Vector2 dest, bool loop, Vector2 offsets, float flipOffset, int fps = 10);

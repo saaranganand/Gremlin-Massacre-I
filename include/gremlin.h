@@ -27,6 +27,8 @@ struct Gremlin : Actor {
     Sound explosion;
     Sound walk;
 
+    void resetDeath(float x, float y);
+
     Gremlin(float x = 0.f, float y = 0.f);
 
     void gremlinJump();

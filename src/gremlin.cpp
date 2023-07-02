@@ -1,6 +1,15 @@
 #include <../include/raylib.h>
 #include <../include/gremlin.h>
 
+void Gremlin::resetDeath(float x, float y) {
+    position.x = x;
+    position.y = y;
+
+    state = IDLE;
+
+    health = maxHealth;
+}
+
 Gremlin::Gremlin(float x, float y) : Actor(x, y, 30, 50) {
     anims = AnimationHandler();
 
@@ -39,8 +48,8 @@ Gremlin::Gremlin(float x, float y) : Actor(x, y, 30, 50) {
 
     invincibilityTimer = Timer(.5f);
 
-    maxHealth = 3;
-    health = 3;
+    maxHealth = 2;
+    health = 2;
 
     action = LoadSound("assets/gremlin/action.mp3");
     hurt = LoadSound("assets/gremlin/hurt.wav");

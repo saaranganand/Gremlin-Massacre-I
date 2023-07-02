@@ -13,6 +13,8 @@ Game::Game() {
     map = Map();
     map.assignMap("levels/tutorial.out", 98, 23, {78, 6});
     map.mapName = "tutorial";
+    //map.assignMap("levels/room1.out", 144, 48, {1, 25});
+    //map.mapName = "room1";
 
     player = Player(map.startTile.x * map.tileSize, map.startTile.y * map.tileSize);
     gremlin = Gremlin(68 * map.tileSize, 6 * map.tileSize);
@@ -41,7 +43,6 @@ void Game::update() {
         state = YOUDIED;
         return;
     }
-    Game::transitionStage();
 
 
     gremlin.update(map, player, coins, dt);
@@ -56,6 +57,8 @@ void Game::update() {
         }
         i++;
     }
+
+    Game::transitionStage();
 
     if (IsKeyPressed(ui.pause)) state = MENU;
 }
@@ -170,22 +173,24 @@ void Game::transitionStage() {
     for (int x = leftColumn; x <= rightCloumn; x++) {
         for (int y = topRow; y <= bottomRow; y++) {
             if (map.getTile(x, y)->type == TRANSITION) {
-                printf("here!\n");
                 if (map.mapName == "tutorial") {
                     map.reset();
-                    map.assignMap("levels/room1.out", 144, 48, {1, 125});
+                    map.assignMap("levels/room1.out", 144, 48, {1, 25});
                     map.mapName = "room1";
-                    player.position = {1 * map.tileSize, 125 * map.tileSize};
+                    player.position = {1 * map.tileSize, 25 * map.tileSize};
+                    return;
                 }
-                if (map.mapName == "room1") {
+                else if (map.mapName == "room1") {
                     map.reset();
                     map.assignMap("levels/tutorial.out", 98, 23, {9, 6});
                     map.mapName = "tutorial";
                     player.position = {9 * map.tileSize, 6 * map.tileSize};
+                    return;
                 }
             }
         }
     }
+    printf("%d\n", map.instantiated);
 }
 
 void Game::kill() {

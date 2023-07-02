@@ -61,7 +61,7 @@ Game::Game() {
     dt = 0.016667f;
     estusCost = 5;
 
-    debugging = true;
+    debugging = false;
     noticed = false;
 
     coinTexture = loadTextureUnloadImage("assets/coin.png");
@@ -117,7 +117,7 @@ void Game::update() {
 
     if (IsKeyPressed(ui.pause)) state = MENU;
     printf("test\n");
-    if (player.coins >= 5 && !noticed) state = NOTICE;
+    if (player.coins >= 300 && !noticed) state = NOTICE;
 }
 
 void Game::draw() {

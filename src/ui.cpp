@@ -141,12 +141,12 @@ void UI::drawMenu() {
     
     ClearBackground(BLACK);
 
-    DrawTexturePro(backG, {0, 0, 67, 59}, {(SCREEN_W - 67) / 2.f, 20, 67 * 4, 59 * 4}, {0, 0}, 0.f, WHITE);
+    DrawTexturePro(backG, {0, 0, 67, 59}, {(SCREEN_W - (67 * 4)) / 2.f, 20, 67 * 4, 59 * 4}, {0, 0}, 0.f, WHITE);
 
-    drawButton(200, 100, "Play", 40, WHITE, BLACK, 4.f, 1.f, 120);
-    drawButton(200, 100, "Options", 40, WHITE, BLACK, 4.f, 2.f, 60);
-    drawButton(200, 100, "Quit", 40, WHITE, BLACK, 4.f, 3.f, 40);
-    drawSelector(200, 100, 4.f, menuState, 5, RED);
+    drawButton(200, 100, "Play", 40, WHITE, BLACK, 6.f, 3.f, 100);
+    drawButton(200, 100, "Options", 40, WHITE, BLACK, 6.f, 4.f, 60);
+    drawButton(200, 100, "Quit", 40, WHITE, BLACK, 6.f, 5.f, 40);
+    drawSelector(200, 100, 6.f, (menuState + 2), 5, RED);
     
     EndDrawing();
 }

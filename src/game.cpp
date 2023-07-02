@@ -249,18 +249,22 @@ void Game::transitionStage() {
                 else if (map.mapName == "room3") {
                     if ((player.position.y / map.tileSize) < 78) { // top
                         map.reset();
-                        load_4(0, 0);
+                        load_4(55, 13);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                     } else {
                         map.reset();
                         load_2(27, 2);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                     }
+                } else if (map.mapName == "room4") {
+                    map.reset();
+                    load_3(1, 20);
+                    player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                 }
                 else if (map.mapName == "room5") {
                     if ((player.position.x / map.tileSize) > 30) {
                         map.reset();
-                        load_6(0, 0);
+                        load_6(1, 16);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                     } else if ((player.position.y / map.tileSize) > 36) {
                         map.reset();
@@ -271,6 +275,10 @@ void Game::transitionStage() {
                         load_2(89, 52);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                     }
+                } else if (map.mapName == "room6") {
+                    map.reset();
+                    load_5(66, 60);
+                    player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                 }
 
                 //load entities
@@ -327,24 +335,62 @@ void Game::load_2(float x, float y) {
     map.assignMap("levels/room2.out", 91, 90, {x, y}, {16, 25});
     map.mapName = "room2";
 
+    gremlins.push_back(Gremlin(41 * map.tileSize, 12 * map.tileSize));
+    gremlins.push_back(Gremlin(49 * map.tileSize, 28 * map.tileSize));
+    gremlins.push_back(Gremlin(42 * map.tileSize, 39 * map.tileSize));
+    gremlins.push_back(Gremlin(35 * map.tileSize, 73 * map.tileSize));
+    gremlins.push_back(Gremlin(77 * map.tileSize, 75 * map.tileSize));
 }
 
 void Game::load_3(float x, float y) {
     map.assignMap("levels/room3.out", 200, 155, {x, y}, {36, 124});
     map.mapName = "room3";
-
+    gremlins.push_back(Gremlin(173 * map.tileSize, 145 * map.tileSize));
+    gremlins.push_back(Gremlin(95 * map.tileSize, 123 * map.tileSize));
+    gremlins.push_back(Gremlin(85 * map.tileSize, 100 * map.tileSize));
+    gremlins.push_back(Gremlin(35 * map.tileSize, 76 * map.tileSize));
 }
 
 void Game::load_4(float x, float y) {
-    
+    map.assignMap("levels/room4.out", 57, 26, {x, y});
+    map.mapName = "room4";
+    //frog room
+
 }
 
 void Game::load_5(float x, float y) {
     map.assignMap("levels/room5.out", 68, 80, {x, y}, {34, 68});
     map.mapName = "room5";
-
+    gremlins.push_back(Gremlin(17 * map.tileSize, 54 * map.tileSize));
+    gremlins.push_back(Gremlin(20 * map.tileSize, 11 * map.tileSize));
+    gremlins.push_back(Gremlin(62 * map.tileSize, 60 * map.tileSize));
+    gremlins.push_back(Gremlin(57 * map.tileSize, 60 * map.tileSize));
 }
 
 void Game::load_6(float x, float y) {
+    map.assignMap("levels/room4.out", 57, 26, {x, y});
+    map.mapName = "room4";
 
+    gremlins.push_back(Gremlin(17 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(18 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(19 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(20 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(21 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(22 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(23 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(24 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(25 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(26 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(27 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(28 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(29 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(30 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(31 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(32 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(33 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(34 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(35 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(36 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(37 * map.tileSize, 20 * map.tileSize));
+    gremlins.push_back(Gremlin(38 * map.tileSize, 20 * map.tileSize));
 }

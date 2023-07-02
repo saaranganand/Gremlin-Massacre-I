@@ -41,25 +41,42 @@ void Map::writeMap(const char* file) {
 }
 
 void Map::createTiles() {
-    Tile error = Tile(BACKGROUND);
-    error.source = {0.f, 0.f, 64.f, 64.f};
-
-    Tile spike = Tile(DAMAGE, 1, true);
-    spike.source = {64.f, 0.f, 64.f, 64.f};
-
-    Tile wall = Tile(STATIC);
-    wall.source = {128.f, 0.f, 64.f, 64.f};
+    Tile wall1 = Tile(STATIC);
+    wall1.source = {0, 0, 32, 32};
+    Tile wall2 = Tile(STATIC);
+    wall2.source = {0, 0, 32, 32};
+    Tile wall3 = Tile(STATIC);
+    wall3.source = {0, 0, 32, 32};
+    Tile wall4 = Tile(STATIC);
+    wall4.source = {0, 0, 32, 32};
+    Tile wall5 = Tile(STATIC);
+    wall5.source = {0, 0, 32, 32};
+    Tile wall6 = Tile(STATIC);
+    wall6.source = {0, 0, 32, 32};
+    Tile wall7 = Tile(STATIC);
+    wall7.source = {0, 0, 32, 32};
+    Tile wall8 = Tile(STATIC);
+    wall8.source = {0, 0, 32, 32};
+    Tile wall9 = Tile(STATIC);
+    wall9.source = {0, 0, 32, 32};
 
     Tile air = Tile(NONE);
-    air.source = {192.f, 0.f, 64.f, 64.f};
+    air.source = {192.f, 0.f, 32.f, 32.f};
 
-    tiles[26] = wall;
-    tiles[2] = air;
-    tiles[5] = air;
-    tiles[27] = spike;
+    tiles[1] = wall1;
+    tiles[2] = wall2;
+    tiles[3] = wall3;
+    tiles[4] = wall4;
+    tiles[5] = wall5;
+    tiles[6] = wall6;
+    tiles[7] = wall7;
+    tiles[8] = wall8;
+    tiles[9] = wall9;
+
+    tiles[10] = air;
     tiles[11] = air;
-    tiles[17] = air;
-    tiles[0] = error;
+    tiles[12] = air;
+    tiles[13] = air;
 }
 
 Map::Map() {

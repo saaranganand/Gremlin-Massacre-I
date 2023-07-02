@@ -72,17 +72,17 @@ void Map::createTiles() {
 
     Tile air = Tile(NONE);
     air.source = {x, 0.f, 32.f, 32.f};
-    Tile transition = Tile(NONE);
+    Tile transition = Tile(TRANSITION);
     transition.source = {x, 0.f, 32.f, 32.f}; 
-
-    Tile shop = Tile(SHOP);
-    shop.source = {x, 0.f, 32.f, 32.f};
+    x+= 32;
     Tile bonfire = Tile(BONFIRE);
     bonfire.source = {x, 0.f, 32.f, 32.f}; 
     x+=32;
-    x+=32;
     Tile spike = Tile(DAMAGE, 1, true);
     spike.source = {x, 0.f, 32.f, 32.f}; 
+    x+= 32;
+    Tile shop = Tile(SHOP);
+    shop.source = {x, 0.f, 32.f, 32.f};
     
     tiles[1] = wall1;
     tiles[2] = wall2;
@@ -107,7 +107,7 @@ Map::Map() {
     width = 0;
     height = 0;
 
-    tileSize = 40;
+    tileSize = 55;
     startTile = { 0, 0 };
 
     tileSheet = loadTextureUnloadImage("assets/tileSheet.png");
@@ -147,16 +147,19 @@ void Map::draw(Camera2D camera) {
 
     for (; y < maxY + 1; y++) {
         for (int i = x; i < maxX + 1; i++) {
-            if (!(getTile(i, y)->type == NONE)) {
+            if (!(getTile(i, y)->type == NONE || getTile(i, y)->type == TRANSITION)) {
                 Rectangle src = getTile(i, y)->source;
                 Rectangle dest = { i * tileSize, y * tileSize, tileSize, tileSize };
 
                 float rotation = 0.f;
-                if (getTile(i - 1, y)->type == DAMAGE) {
-                    if (getTile(i - 1, y)->type == STATIC) rotation = 3 * PI / 2;
-                    if (getTile(i + 1, y)->type == STATIC) rotation = PI / 2;
-                    if (getTile(i, y - 1)->type == STATIC) rotation = PI;
+                if (i > 0) {
+                    if (getTile(i - 1, y)->type == DAMAGE) {
+                        if (getTile(i - 1, y)->type == STATIC) rotation = 3 * PI / 2;
+                        if (getTile(i + 1, y)->type == STATIC) rotation = PI / 2;
+                        if (getTile(i, y - 1)->type == STATIC) rotation = PI;
+                    }
                 }
+                
                 
                 DrawTexturePro(tileSheet, src, dest, ZERO, rotation, WHITE);
             }

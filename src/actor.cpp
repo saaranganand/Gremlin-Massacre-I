@@ -243,6 +243,11 @@ bool Actor::hitStage(Map map, Collider box, TileType tType) {
     int topRow = pos.y / map.tileSize;
     int bottomRow = (pos.y + box.size.y) / map.tileSize;
 
+    clamp(leftColumn, 0, map.width - 1);
+    clamp(rightCloumn, 0, map.width - 1);
+    clamp(topRow, 0, map.height - 1);
+    clamp(bottomRow, 0, map.height - 1);
+
     for (int x = leftColumn; x <= rightCloumn; x++) {
         for (int y = topRow; y <= bottomRow; y++) {
             if (map.getTile(x, y)->type == tType) {

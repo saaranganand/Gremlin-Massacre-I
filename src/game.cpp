@@ -11,10 +11,8 @@ Game::Game() {
     ui = UI();
 
     map = Map();
-    map.assignMap("levels/tutorial.out", 98, 23, {78, 6});
+    map.assignMap("levels/tutorial.out", 98, 23, {9, 6});
     map.mapName = "tutorial";
-    //map.assignMap("levels/room1.out", 144, 48, {1, 25});
-    //map.mapName = "room1";
 
     player = Player(map.startTile.x * map.tileSize, map.startTile.y * map.tileSize);
     gremlin = Gremlin(68 * map.tileSize, 6 * map.tileSize);
@@ -38,17 +36,20 @@ Game::Game() {
 }
 
 void Game::update() {
+    printf("updating player...\n");
     player.update(map, ui, dt);
     if (player.health <= 0) {
         state = YOUDIED;
         return;
     }
-
-
+    printf("player safe\n");
+    printf("updating gremlin...\n");
     gremlin.update(map, player, coins, dt);
-
+    printf("gremlin safe\n");
+    printf("updating camera...\n");
     updateCameraToMap(camera, player, map);
-
+    printf("camera safe\n");
+    printf("updating coin...\n");
     int i = 0;
     for (Coin& c : coins) {
         if (c.update(player, map, dt)) {
@@ -57,8 +58,10 @@ void Game::update() {
         }
         i++;
     }
-
+    printf("coin safe\n");
+    printf("updating stage...\n");
     Game::transitionStage();
+    printf("stage safe\n");
 
     if (IsKeyPressed(ui.pause)) state = MENU;
 }
@@ -73,7 +76,7 @@ void Game::draw() {
     BeginMode2D(camera);
 
     map.draw(camera);
-
+    printf("map sagn");
     //if (debugging) drawGrid();
 
     player.draw(debugging, dt);
@@ -178,19 +181,26 @@ void Game::transitionStage() {
                     map.assignMap("levels/room1.out", 144, 48, {1, 25});
                     map.mapName = "room1";
                     player.position = {1 * map.tileSize, 25 * map.tileSize};
-                    return;
+                    
                 }
                 else if (map.mapName == "room1") {
                     map.reset();
-                    map.assignMap("levels/tutorial.out", 98, 23, {9, 6});
-                    map.mapName = "tutorial";
-                    player.position = {9 * map.tileSize, 6 * map.tileSize};
-                    return;
+                    if (player.position.x / map.tileSize < 3) {
+                        map.assignMap("levels/tutorial.out", 98, 23, {9, 6});
+                        map.mapName = "tutorial";
+                        player.position = {9 * map.tileSize, 6 * map.tileSize};
+                    } else {
+                        map.assignMap("levels/room2.out", 91, 90, {1, 27});
+                        map.mapName = "room2";
+                        player.position = {9 * map.tileSize, 6 * map.tileSize};
+                    }
+                    
+                    
                 }
+                return;
             }
         }
     }
-    printf("%d\n", map.instantiated);
 }
 
 void Game::kill() {

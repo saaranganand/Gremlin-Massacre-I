@@ -26,7 +26,9 @@ int main() {
 
             case PLAY:
                 game.update();
+                printf("update safe\n");
                 game.draw();
+                printf("draw safe\n");
                 if (game.state == YOUDIED) PlaySound(game.youdied);
                 break;
             case YOUDIED:

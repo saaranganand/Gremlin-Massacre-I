@@ -36,6 +36,7 @@ struct AttackHandler {
 
     bool active;
     bool flipX;
+    bool done;
 
     AttackHandler();
 

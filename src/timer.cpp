@@ -32,8 +32,7 @@ void Timer::kill() {
 void Timer::update(float dt) {
     if (active) elapsed += dt;
     if (elapsed > time) {
-        elapsed = 0.f;
-        if (!loop) pause();
+        if (!loop) kill();
         if (shouldTrigger) trigger();
     }
 }

@@ -52,6 +52,7 @@ void AnimationHandler::update(float dt) {
     }
     if (frame == current->frames && current->loop) frame = 0;
     else done = true;
+
     clamp(frame, 0, current->frames - 1);
 }
 

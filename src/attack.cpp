@@ -25,6 +25,7 @@ AttackHandler::AttackHandler() {
 
     active = false;
     flipX = false;
+    done = false;
 }
 
 void AttackHandler::play(const char* name) {
@@ -33,6 +34,7 @@ void AttackHandler::play(const char* name) {
     current = &attacks[name];
     current->hitbox.active = true;
     active = true;
+    done = false;
 
     attackTime = 0.f;
     attackLength = current->duration;
@@ -57,6 +59,7 @@ void AttackHandler::update(float x, float y, float dt) {
     if (attackTime > attackLength) {
         attackTime = attackLength;
         current->hitbox.active = false;
+        done = true;
     }
 
     if (attackTime == attackLength) {

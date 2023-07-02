@@ -3,8 +3,8 @@
 #include <../include/defs.h>
 #include <stdio.h>
 
-int SCREEN_W = 900;
-int SCREEN_H = 600;
+int SCREEN_W = 1600;
+int SCREEN_H = 800;
 
 int main() {
     SetConfigFlags(FLAG_VSYNC_HINT);

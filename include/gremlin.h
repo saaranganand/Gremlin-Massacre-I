@@ -8,16 +8,20 @@
 #include <animation.h>
 #include <attack.h>
 
+enum GremlinState { IDLE = 0, RUNLEFT, RUNRIGHT, FIGHT, SCARED };
+
 struct Gremlin : Actor {
     AttackHandler atks;
 
     AnimationHandler anims;
 
+    GremlinState state;
+
     float aggroRange;
-    bool aggroed;
-    
     float attackRange;
-    bool attackMode;
+
+    Timer scaredTimer;
+    Timer scaredRunTimer;
 
     Gremlin(float x = 0.f, float y = 0.f);
 

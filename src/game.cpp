@@ -264,7 +264,7 @@ void Game::transitionStage() {
                 else if (map.mapName == "room5") {
                     if ((player.position.x / map.tileSize) > 30) {
                         map.reset();
-                        load_6(1, 16);
+                        load_6(4, 16);
                         player.position = {map.startTile.x * map.tileSize, map.startTile.y * map.tileSize};
                     } else if ((player.position.y / map.tileSize) > 36) {
                         map.reset();
@@ -368,8 +368,8 @@ void Game::load_5(float x, float y) {
 }
 
 void Game::load_6(float x, float y) {
-    map.assignMap("levels/room4.out", 57, 26, {x, y});
-    map.mapName = "room4";
+    map.assignMap("levels/room6.out", 57, 26, {x, y});
+    map.mapName = "room6";
 
     gremlins.push_back(Gremlin(17 * map.tileSize, 20 * map.tileSize));
     gremlins.push_back(Gremlin(18 * map.tileSize, 20 * map.tileSize));

@@ -149,6 +149,10 @@ void Gremlin::update(Map map, Player& player, std::vector<Coin>& coins, float dt
         
         takeDamage(1, 0.f, {dirX,dirY}, coins);
         invincibilityTimer.start();
+
+        if (player.atks.current == &player.atks.attacks["pogo"]) {
+            player.CH_velocity.y = player.jumpVelocity;
+        }
     }
 
     if (atks.active && atks.current != NULL) if (atks.current->hitbox.collides(player.hurtbox)) {

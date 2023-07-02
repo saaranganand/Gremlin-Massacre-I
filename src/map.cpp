@@ -72,14 +72,17 @@ void Map::createTiles() {
 
     Tile air = Tile(NONE);
     air.source = {x, 0.f, 32.f, 32.f};
-    Tile transition = Tile(TRANSITION);
+    Tile transition = Tile(NONE);
     transition.source = {x, 0.f, 32.f, 32.f}; 
 
     Tile shop = Tile(SHOP);
-    shop.source = {x, 0.f, 32.f, 32.f}; 
+    shop.source = {x, 0.f, 32.f, 32.f};
     Tile bonfire = Tile(BONFIRE);
     bonfire.source = {x, 0.f, 32.f, 32.f}; 
     x+=32;
+    x+=32;
+    Tile spike = Tile(DAMAGE, 1, true);
+    spike.source = {x, 0.f, 32.f, 32.f}; 
     
     tiles[1] = wall1;
     tiles[2] = wall2;
@@ -93,7 +96,7 @@ void Map::createTiles() {
 
     tiles[10] = air;
     tiles[11] = bonfire;
-    tiles[12] = air;
+    tiles[12] = spike;
     tiles[13] = shop;
     tiles[15] = transition;
 }
@@ -145,8 +148,17 @@ void Map::draw(Camera2D camera) {
     for (; y < maxY + 1; y++) {
         for (int i = x; i < maxX + 1; i++) {
             if (!(getTile(i, y)->type == NONE)) {
+                Rectangle src = getTile(i, y)->source;
                 Rectangle dest = { i * tileSize, y * tileSize, tileSize, tileSize };
-                DrawTexturePro(tileSheet, getTile(i, y)->source, dest, ZERO, 0.f, WHITE);
+
+                float rotation = 0.f;
+                if (getTile(i - 1, y)->type == DAMAGE) {
+                    if (getTile(i - 1, y)->type == STATIC) rotation = 3 * PI / 2;
+                    if (getTile(i + 1, y)->type == STATIC) rotation = PI / 2;
+                    if (getTile(i, y - 1)->type == STATIC) rotation = PI;
+                }
+                
+                DrawTexturePro(tileSheet, src, dest, ZERO, rotation, WHITE);
             }
         }
     }
